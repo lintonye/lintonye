@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>Linton's React Native Diary</title>
+ <link href="http://lintonye.github.io/atom.xml" rel="self"/>
+ <link href="http://lintonye.github.io"/>
+ <updated>2016-06-07T11:43:44-07:00</updated>
+ <id>http://lintonye.github.io/atom.xml</id>
+ <author>
+   <name>Linton Ye</name>
+   <uri>http://lintonye.github.io</uri>
+ </author>
+
+ 
+ <entry>
+   <title>Kicking it off: My React Native Diary</title>
+   <link href="http://lintonye.github.io/2016/06/06/kicking-off-diary-about-react-native.html"/>
+   <published>2016-06-06T00:00:00-07:00</published>
+   <updated>2016-06-06</updated>
+   <id>http://lintonye.github.io/2016/06/06/kicking-off-diary-about-react-native</id>
+   <content type="html">&lt;p&gt;It’s hard to ignore the success that React Native has achieved in &lt;a href=&quot;https://code.facebook.com/posts/597378980427792/&quot;&gt;a short year&lt;/a&gt;. With the neck-breaking development in its ecosystem, React Native is looking increasingly promising. Is it mature enough for production use? How does its mantra “learn once, write everywhere” affect developer productivity in real life? How does it compare to other cross-platform solutions (such as Xamarin)? To answer questions like these, I decided to try it with my own hands and share whatever I’ll learn in the journey.&lt;/p&gt;
+
+&lt;p&gt;I’ll try to build a new app with React Native every one or two months (~ 1-2 hours per day), and write a post every week: silly mistakes, road blocks, gotchas and pitfalls, tips and tricks, cool tools, third-party components, useful resources and of course the full source code.&lt;/p&gt;
+
+&lt;p&gt;My background is primarily in Android (built a &lt;a href=&quot;http://jimulabs.com/&quot;&gt;tool&lt;/a&gt;, wrote a Treehouse &lt;a href=&quot;https://teamtreehouse.com/library/animations-and-transitions&quot;&gt;course&lt;/a&gt;) and I’ve used JavaScript and React in a couple of recent projects.  Whether you have similar experience or not, I hope you could learn one thing or two by watching me stumbling through the process.&lt;/p&gt;
+
+&lt;h2 id=&quot;todo-wonder&quot;&gt;Todo Wonder&lt;/h2&gt;
+&lt;p&gt;Let’s get started with building a todo list app that I’ve always wanted. I know, there are a million todo list apps already, but trust me it’s very valuable for learning with UI paradigms that almost every app uses, sending and retrieving data to/from a server, user accounts etc. So bear with me.&lt;/p&gt;
+
+&lt;p&gt;On the completion of this app, we should be able to cover the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Navigator&lt;/li&gt;
+  &lt;li&gt;Lists&lt;/li&gt;
+  &lt;li&gt;Tabs&lt;/li&gt;
+  &lt;li&gt;Touch gestures (Drag &amp;amp; Drop, swipe to dismiss)&lt;/li&gt;
+  &lt;li&gt;Google / Facebook sign in&lt;/li&gt;
+  &lt;li&gt;Firebase integration&lt;/li&gt;
+  &lt;li&gt;Android first, iOS next&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/kickoff/todo-wireframe1.png&quot; alt=&quot;Wireframe&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Check out &lt;a href=&quot;/images/kickoff/todos-wireframes.pdf&quot;&gt;this PDF&lt;/a&gt; if you want to see the full wireframes.&lt;/p&gt;
+
+&lt;h2 id=&quot;schedule--deliverables&quot;&gt;Schedule &amp;amp; Deliverables&lt;/h2&gt;
+&lt;p&gt;I’m going to treat this as a formal project, so I’m sharing my schedules and deliverables here. :) You are my client and I’ll be responsible for the time you’ve invested in reading this far. I’ll try my best to follow the schedule and write about useful things.&lt;/p&gt;
+
+&lt;h3 id=&quot;may---june-6&quot;&gt;May - June 6&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Project setup (and accumulate enough motivation to write this post). Here are some highlights from my notes so far: &lt;a href=&quot;#project-setup-tips&quot;&gt;#project-setup-tips&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;june-6---jun-12&quot;&gt;June 6 - Jun 12&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Hi-fi Prototype (with only mock data)
+    &lt;ul&gt;
+      &lt;li&gt;Navigator&lt;/li&gt;
+      &lt;li&gt;Log in screen (only collect email address, does not actually sign in)&lt;/li&gt;
+      &lt;li&gt;Priority &amp;amp; Duration tabs&lt;/li&gt;
+      &lt;li&gt;Task lists&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;june-13---june-19&quot;&gt;June 13 - June 19&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Hi-fi Prototype (with only mock data)
+    &lt;ul&gt;
+      &lt;li&gt;Create / edit task&lt;/li&gt;
+      &lt;li&gt;Drag &amp;amp; Drop&lt;/li&gt;
+      &lt;li&gt;Done tab&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;june-20---june-26&quot;&gt;June 20 - June 26&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Firebase integration&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;june-27---june-30&quot;&gt;June 27 - June 30&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;iOS&lt;/li&gt;
+  &lt;li&gt;Google / FB sign in&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a name=&quot;project-setup-tips&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;tips-from-what-ive-done-so-far&quot;&gt;Tips from what I’ve done so far&lt;/h2&gt;
+&lt;p&gt;Here are some highlights from my notes since I started working on this project in May. If you are really curious, feel free to check out the &lt;a href=&quot;https://www.evernote.com/l/AFutRbAf2hBI6bdfDtTwn3TkcDacSH8OHGE&quot;&gt;raw notes&lt;/a&gt; (I’m updating it live every day).&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;On Android’s new emulator: use &lt;code&gt;cmd+M&lt;/code&gt; to bring up the dev menu&lt;/li&gt;
+  &lt;li&gt;Debugging on a device: &lt;code&gt;adb reverse&lt;/code&gt; does not produce any error message if the port on the host is already being occupied. If you see the red screen that complains about connectivity, make sure to free up the 8081 port on your computer.&lt;/li&gt;
+  &lt;li&gt;Hot reloading sounds cool, but it still seems unstable as of 0.25.1. Often times it yells at you with incomprehensible error messages (see the raw notes). I had to manually reload JS.&lt;/li&gt;
+  &lt;li&gt;There is no &lt;code&gt;&amp;lt;Button&amp;gt;&lt;/code&gt; out of the box! You’d have to build your own with things like &lt;code&gt;&amp;lt;TouchableHighlight&amp;gt;&lt;/code&gt;, but I’m still scratching my head why &lt;code&gt;&amp;lt;TouchableNativeFeedback&amp;gt;&lt;/code&gt; does not give any feedback at all in my code! The fact that I haven’t found anything yet on SO indicates that I must have made a really silly mistake. I’ll shamelessly write about it when I figure it out.&lt;/li&gt;
+  &lt;li&gt;For connecting screens together, &lt;code&gt;&amp;lt;Navigator&amp;gt;&lt;/code&gt; is the choice of weapon for now, but it seems it’ll be replaced soon by something featuring single-directional data flow. I only read about it &lt;a href=&quot;https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.3g05z3oh1&quot;&gt;here&lt;/a&gt; and haven’t found any proof of it, so take it with some salt.&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+ </entry>
+ 
+
+</feed>

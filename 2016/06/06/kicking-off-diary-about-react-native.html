@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kicking it off: My React Native Diary &mdash; Linton's React Native Diary</title>
+  <!--[if lt IE 9]><script src='https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js'></script><![endif]-->
+  
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<script src="/assets/app.js"></script>
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+
+
+
+
+
+  <link rel="shortcut icon" href="/favicon.ico?v2" type="image/x-icon" />
+  <link rel="alternate" type="application/atom+xml" title="Linton's React Native Diary" href="/atom.xml" />
+  <meta name="title" content="Kicking it off: My React Native Diary ">
+  <link rel="canonical" href="http://lintonye.github.io/2016/06/06/kicking-off-diary-about-react-native.html">
+  
+  
+  <meta property="og:title" content="Kicking it off: My React Native Diary"/>
+  <meta property="og:url" content="http://lintonye.github.io/2016/06/06/kicking-off-diary-about-react-native.html"/>
+  <meta property="og:image" content="http://lintonye.github.io/images/kickoff.jpg"/>
+  
+  <meta property="og:description" content="Kicking off my diary about React Native"/>
+  <meta name="description" content="Kicking off my diary about React Native"/>
+  
+  <meta property="og:site_name" content="Linton's React Native Diary">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav>
+      <a class="brand" href="/">
+        <img src="/images/logo.png" alt="Inc">
+      </a>
+      <a href="/">Blog</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </header>
+
+  
+<div class="article-cover" style="background-image:url(/images/kickoff.jpg)"></div>
+
+
+<div class='cover-caption'><a href='/about.html#pictures'>Overbrook ravine in Clintonville. Photo: Will Koehler</a></div>
+
+
+<article >
+
+  <div class="container">
+    <header>
+      <div class="meta">
+        By <address><a rel="author" href="" title="Linton Ye" target="_blank">Linton Ye</a></address> &mdash;
+        <time pubdate datetime="2016-06-June" title="Jun 06, 2016">Jun 06, 2016</time> &mdash;
+        
+4 min read
+      </div>
+      <h1 class="title">Kicking it off: My React Native Diary</h1>
+      
+    </header>
+
+    <section>
+      <p>It’s hard to ignore the success that React Native has achieved in <a href="https://code.facebook.com/posts/597378980427792/">a short year</a>. With the neck-breaking development in its ecosystem, React Native is looking increasingly promising. Is it mature enough for production use? How does its mantra “learn once, write everywhere” affect developer productivity in real life? How does it compare to other cross-platform solutions (such as Xamarin)? To answer questions like these, I decided to try it with my own hands and share whatever I’ll learn in the journey.</p>
+
+<p>I’ll try to build a new app with React Native every one or two months (~ 1-2 hours per day), and write a post every week: silly mistakes, road blocks, gotchas and pitfalls, tips and tricks, cool tools, third-party components, useful resources and of course the full source code.</p>
+
+<p>My background is primarily in Android (built a <a href="http://jimulabs.com/">tool</a>, wrote a Treehouse <a href="https://teamtreehouse.com/library/animations-and-transitions">course</a>) and I’ve used JavaScript and React in a couple of recent projects.  Whether you have similar experience or not, I hope you could learn one thing or two by watching me stumbling through the process.</p>
+
+<h2 id="todo-wonder">Todo Wonder</h2>
+<p>Let’s get started with building a todo list app that I’ve always wanted. I know, there are a million todo list apps already, but trust me it’s very valuable for learning with UI paradigms that almost every app uses, sending and retrieving data to/from a server, user accounts etc. So bear with me.</p>
+
+<p>On the completion of this app, we should be able to cover the following:</p>
+
+<ul>
+  <li>Navigator</li>
+  <li>Lists</li>
+  <li>Tabs</li>
+  <li>Touch gestures (Drag &amp; Drop, swipe to dismiss)</li>
+  <li>Google / Facebook sign in</li>
+  <li>Firebase integration</li>
+  <li>Android first, iOS next</li>
+</ul>
+
+<p><img src="/images/kickoff/todo-wireframe1.png" alt="Wireframe" /></p>
+
+<p>Check out <a href="/images/kickoff/todos-wireframes.pdf">this PDF</a> if you want to see the full wireframes.</p>
+
+<h2 id="schedule--deliverables">Schedule &amp; Deliverables</h2>
+<p>I’m going to treat this as a formal project, so I’m sharing my schedules and deliverables here. :) You are my client and I’ll be responsible for the time you’ve invested in reading this far. I’ll try my best to follow the schedule and write about useful things.</p>
+
+<h3 id="may---june-6">May - June 6</h3>
+<ul>
+  <li>Project setup (and accumulate enough motivation to write this post). Here are some highlights from my notes so far: <a href="#project-setup-tips">#project-setup-tips</a>.</li>
+</ul>
+
+<h3 id="june-6---jun-12">June 6 - Jun 12</h3>
+<ul>
+  <li>Hi-fi Prototype (with only mock data)
+    <ul>
+      <li>Navigator</li>
+      <li>Log in screen (only collect email address, does not actually sign in)</li>
+      <li>Priority &amp; Duration tabs</li>
+      <li>Task lists</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="june-13---june-19">June 13 - June 19</h3>
+<ul>
+  <li>Hi-fi Prototype (with only mock data)
+    <ul>
+      <li>Create / edit task</li>
+      <li>Drag &amp; Drop</li>
+      <li>Done tab</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="june-20---june-26">June 20 - June 26</h3>
+<ul>
+  <li>Firebase integration</li>
+</ul>
+
+<h3 id="june-27---june-30">June 27 - June 30</h3>
+<ul>
+  <li>iOS</li>
+  <li>Google / FB sign in</li>
+</ul>
+
+<p><a name="project-setup-tips"></a></p>
+
+<h2 id="tips-from-what-ive-done-so-far">Tips from what I’ve done so far</h2>
+<p>Here are some highlights from my notes since I started working on this project in May. If you are really curious, feel free to check out the <a href="https://www.evernote.com/l/AFutRbAf2hBI6bdfDtTwn3TkcDacSH8OHGE">raw notes</a> (I’m updating it live every day).</p>
+
+<ul>
+  <li>On Android’s new emulator: use <code>cmd+M</code> to bring up the dev menu</li>
+  <li>Debugging on a device: <code>adb reverse</code> does not produce any error message if the port on the host is already being occupied. If you see the red screen that complains about connectivity, make sure to free up the 8081 port on your computer.</li>
+  <li>Hot reloading sounds cool, but it still seems unstable as of 0.25.1. Often times it yells at you with incomprehensible error messages (see the raw notes). I had to manually reload JS.</li>
+  <li>There is no <code>&lt;Button&gt;</code> out of the box! You’d have to build your own with things like <code>&lt;TouchableHighlight&gt;</code>, but I’m still scratching my head why <code>&lt;TouchableNativeFeedback&gt;</code> does not give any feedback at all in my code! The fact that I haven’t found anything yet on SO indicates that I must have made a really silly mistake. I’ll shamelessly write about it when I figure it out.</li>
+  <li>For connecting screens together, <code>&lt;Navigator&gt;</code> is the choice of weapon for now, but it seems it’ll be replaced soon by something featuring single-directional data flow. I only read about it <a href="https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.3g05z3oh1">here</a> and haven’t found any proof of it, so take it with some salt.</li>
+</ul>
+
+      
+<div class="social">
+  
+  <div class='twitter'>
+    <a href="https://twitter.com/share" class="twitter-share-button"  data-text="Kicking it off: My React Native Diary" data-related="lintonye">Tweet</a>
+  </div>
+  
+
+  
+  <div class='facebook'>
+    <div class="fb-share-button" data-layout="button_count"></div>
+  </div>
+  
+
+  
+  <div class='google'>
+    <div class="g-plusone" data-size="medium"></div>
+  </div>
+  
+    
+  
+
+  
+  <div class='reddit'>
+    <a href="//www.reddit.com/submit" onclick="window.open('//www.reddit.com/submit?url=http://lintonye.github.io/2016/06/06/kicking-off-diary-about-react-native.html&title=Kicking+it+off%3A+My+React+Native+Diary'); return false"> <img src="//www.redditstatic.com/spreddit7.gif" alt="submit to reddit" border="0" /> </a>
+  </div>
+  
+</div>
+
+    </section>
+
+    <footer>
+      <address>
+        <img src="/images/linton.jpg">
+        <p>Written by <strong><a rel="author" href="https://twitter.com/lintonye" title="" target="_blank">Linton Ye</a></strong><br>
+          <span class="muted">Founder of jimu Labs.</span>
+        </p>
+      </address>
+       
+       
+      
+      <section>
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'lintonye';
+
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+      </section>
+      
+    </footer>
+  </div>
+</article>
+
+
+  <footer class="site-footer">
+    <div class="container">
+      &copy; 2016 Linton Ye
+
+      <nav>
+        <a href="/">Blog</a> &middot;
+        <a href="/about.html">About</a>
+      </nav>
+
+      <nav class="social">
+        
+<a href="https://twitter.com/lintonye" title="Follow on Twitter" target="_blank"><i class="icon icon-twitter"></i></a>
+
+
+<a href="https://github.com/lintonye" title="Watch on Github" target="_blank"><i class="icon icon-github"></i></a>
+
+
+<a href="/atom.xml" title="RSS Feed">
+  <i class="icon icon-rss"></i>
+</a>
+
+      </nav>
+      <div>Based on Incorporated theme by <a href="https://sendtoinc.com">Inc</a></div>
+    </div>
+  </footer>
+
+</body>
+</html>
