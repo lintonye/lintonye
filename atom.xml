@@ -4,13 +4,67 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2016-06-23T13:25:15-07:00</updated>
+ <updated>2016-06-27T12:24:58-07:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
    <uri>http://lintonye.github.io</uri>
  </author>
 
+ 
+ <entry>
+   <title>Custom Domains with GitHub Pages</title>
+   <link href="http://lintonye.github.io/2016/06/27/github-pages-custom-domain.html"/>
+   <published>2016-06-27T00:00:00-07:00</published>
+   <updated>2016-06-27</updated>
+   <id>http://lintonye.github.io/2016/06/27/github-pages-custom-domain</id>
+   <content type="html">&lt;p&gt;This post is about setting up custom domain names when your site is hosted on GitHub Pages. It’s apparently off-topic on a blog about React Native but I was just surprised by the lack of proper step-by-step guides even on GitHub itself.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-goal&quot;&gt;The Goal&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Host a website (e.g. this blog) on GitHub Pages (well, it’s free and working great, who can resist that!).&lt;/li&gt;
+  &lt;li&gt;Instead of the &lt;code&gt;github.io&lt;/code&gt; domain, I’d like to use my own domain name: &lt;code&gt;reactnativediary.com&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;By default, I’d like to use the &lt;code&gt;www&lt;/code&gt; subdomain and redirect the “naked” domain to the &lt;code&gt;www&lt;/code&gt; subdomain, that is: &lt;code&gt;http://reactnativediary.com ==&amp;gt; http://www.reactnativediary.com&lt;/code&gt;. This is because GitHub strongly recommends the use of &lt;code&gt;www&lt;/code&gt; subdomain:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;It gives your GitHub Pages site the benefit of our Content Delivery Network.&lt;/li&gt;
+    &lt;li&gt;It is more stable because it is not affected by changes to the IP addresses of GitHub’s servers.&lt;/li&gt;
+    &lt;li&gt;Pages will load significantly faster because Denial of Service attack protection can be implemented more efficiently.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;steps&quot;&gt;Steps&lt;/h2&gt;
+&lt;p&gt;Below I’m going to use this blog &lt;code&gt;reactnativediary.com&lt;/code&gt; as an example, but of course you can replace it with the info and domain of your own site:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;First of all, create a public repo on GitHub named &lt;code&gt;react-native-diary-blog&lt;/code&gt;. On its &lt;code&gt;gh-pages&lt;/code&gt; branch, make sure all the site content is there.&lt;/li&gt;
+  &lt;li&gt;On &lt;code&gt;gh-pages&lt;/code&gt; branch, create a file named &lt;code&gt;CNAME&lt;/code&gt; with only one line &lt;code&gt;www.reactnativediary.com&lt;/code&gt;. Note, this file can only include one domain, don’t put multiple domain names here. If you’d like to support multiple domains, you probably want to set up 301 redirects on other domains.&lt;/li&gt;
+  &lt;li&gt;On your DNS provider’s site, create a &lt;code&gt;CNAME&lt;/code&gt; record:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;www ==&amp;gt; lintonye.github.io&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Of course, the value of your record should be &lt;code&gt;YOUR-GITHUB-USERNAME.github.io&lt;/code&gt;. See more details &lt;a href=&quot;https://help.github.com/articles/setting-up-a-www-subdomain/#configuring-a-cname-record-with-your-dns-provider&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;4. On your DNS provider’s site, create two &lt;code&gt;A&lt;/code&gt; records for both &lt;code&gt;www&lt;/code&gt; and &lt;code&gt;reactnativediary.com&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;www                        192.30.252.153
+www                        192.30.252.154
+reactnativediary.com       192.30.252.153
+reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;NOTE: If your DNS provider supports &lt;code&gt;ALIAS&lt;/code&gt; or &lt;code&gt;ANAME&lt;/code&gt; records instead of &lt;code&gt;A&lt;/code&gt; records, see [GitHub’s doc] for details. I don’t personally have any experience in this yet.&lt;/p&gt;
+
+&lt;p&gt;It’ll take a while (in my case a couple of hours) for the DNS setting to take effect. When everything is set up properly, you should be able to see this in the repo’s settings:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/github-custom-domain/github-settings.png&quot; alt=&quot;github-settings&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;This is it. After this setup, GitHub should be able to automatically redirect the “naked” domain (&lt;code&gt;reactnativediary.com&lt;/code&gt;) to the &lt;code&gt;www&lt;/code&gt; subdomain. Hopefully you’ll find it more useful than GitHub’s &lt;a href=&quot;https://help.github.com/articles/setting-up-an-apex-domain/&quot;&gt;this&lt;/a&gt;, &lt;a href=&quot;https://help.github.com/articles/setting-up-a-www-subdomain/&quot;&gt;this&lt;/a&gt;, or &lt;a href=&quot;https://help.github.com/articles/using-a-custom-domain-with-github-pages/&quot;&gt;this&lt;/a&gt; pages.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>NavigationExperimental Premier: A Simple Recipe</title>
