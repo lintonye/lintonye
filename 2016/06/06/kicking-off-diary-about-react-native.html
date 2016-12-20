@@ -84,7 +84,8 @@
         By <address><a rel="author" href="" title="Linton Ye" target="_blank">Linton Ye</a></address> &mdash;
         <time pubdate datetime="2016-06-June" title="Jun 06, 2016">Jun 06, 2016</time> &mdash;
         
-4 min read
+6 min read
+
       </div>
       <h1 class="title">Kicking it off: My React Native Diary</h1>
       
@@ -164,11 +165,11 @@
 <p>Here are some highlights from my notes since I started working on this project in May. If you are really curious, feel free to check out the <a href="https://www.evernote.com/l/AFutRbAf2hBI6bdfDtTwn3TkcDacSH8OHGE">raw notes</a> (I’m updating it live every day).</p>
 
 <ul>
-  <li>On Android’s new emulator: use <code>cmd+M</code> to bring up the dev menu</li>
-  <li>Debugging on a device: <code>adb reverse</code> does not produce any error message if the port on the host is already being occupied. If you see the red screen that complains about connectivity, make sure to free up the 8081 port on your computer.</li>
+  <li>On Android’s new emulator: use <code class="highlighter-rouge">cmd+M</code> to bring up the dev menu</li>
+  <li>Debugging on a device: <code class="highlighter-rouge">adb reverse</code> does not produce any error message if the port on the host is already being occupied. If you see the red screen that complains about connectivity, make sure to free up the 8081 port on your computer.</li>
   <li>Hot reloading sounds cool, but it still seems unstable as of 0.25.1. Often times it yells at you with incomprehensible error messages (see the raw notes). I had to manually reload JS.</li>
-  <li>There is no <code>&lt;Button&gt;</code> out of the box! You’d have to build your own with things like <code>&lt;TouchableHighlight&gt;</code>, but I’m still scratching my head why <code>&lt;TouchableNativeFeedback&gt;</code> does not give any feedback at all in my code! The fact that I haven’t found anything yet on SO indicates that I must have made a really silly mistake. I’ll shamelessly write about it when I figure it out.</li>
-  <li>For connecting screens together, <code>&lt;Navigator&gt;</code> is the choice of weapon for now, but it seems it’ll be replaced soon by something featuring single-directional data flow. I only read about it <a href="https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.3g05z3oh1">here</a> and haven’t found any proof of it, so take it with some salt.</li>
+  <li>There is no <code class="highlighter-rouge">&lt;Button&gt;</code> out of the box! You’d have to build your own with things like <code class="highlighter-rouge">&lt;TouchableHighlight&gt;</code>, but I’m still scratching my head why <code class="highlighter-rouge">&lt;TouchableNativeFeedback&gt;</code> does not give any feedback at all in my code! The fact that I haven’t found anything yet on SO indicates that I must have made a really silly mistake. I’ll shamelessly write about it when I figure it out.</li>
+  <li>For connecting screens together, <code class="highlighter-rouge">&lt;Navigator&gt;</code> is the choice of weapon for now, but it seems it’ll be replaced soon by something featuring single-directional data flow. I only read about it <a href="https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.3g05z3oh1">here</a> and haven’t found any proof of it, so take it with some salt.</li>
 </ul>
 
       

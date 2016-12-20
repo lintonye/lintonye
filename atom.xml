@@ -4,13 +4,309 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2016-06-27T12:31:18-07:00</updated>
+ <updated>2016-12-20T15:56:45-08:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
    <uri>http://lintonye.github.io</uri>
  </author>
 
+ 
+ <entry>
+   <title>NavigationExperimental: Custom Transitions (1)</title>
+   <link href="http://lintonye.github.io/2016/12/20/navigation-experimental-custom-transition-1.html"/>
+   <published>2016-12-20T00:00:00-08:00</published>
+   <updated>2016-12-20</updated>
+   <id>http://lintonye.github.io/2016/12/20/navigation-experimental-custom-transition-1</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;https://facebook.github.io/react-native/docs/navigation.html#navigationexperimental&quot;&gt;NavigationExperimental&lt;/a&gt; provides great support for custom transition animations. Do you want to create transitions like the following? This series of posts is for you!&lt;/p&gt;
+
+&lt;div style=&quot;display:flex; flex-direction:row;&quot;&gt;
+  &lt;!-- crossFade --&gt;
+  &lt;div class=&quot;fivecol&quot; style=&quot;float:none; margin-bottom:20px; &quot;&gt;
+  &lt;iframe width=&quot;282&quot; height=&quot;500&quot; src=&quot;//www.youtube.com/embed/6_BGrOQQlko?controls=0&amp;amp;rel=0&amp;amp;showinfo=0;&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+
+  &lt;!-- androidDefault --&gt;
+  &lt;div class=&quot;fivecol&quot; style=&quot;float:none; margin-bottom:20px; margin-left:10px;&quot;&gt;
+  &lt;iframe width=&quot;282&quot; height=&quot;500&quot; src=&quot;//www.youtube.com/embed/oVwq1QDcnOw?controls=0&amp;amp;rel=0&amp;amp;showinfo=0;&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+
+  &lt;!-- materialSharedElement --&gt;
+  &lt;div class=&quot;fivecol&quot; style=&quot;float:none; margin-bottom:20px; margin-left:10px;&quot;&gt;
+  &lt;iframe width=&quot;282&quot; height=&quot;500&quot; src=&quot;//www.youtube.com/embed/efPFJkxa-BQ?controls=0&amp;amp;rel=0&amp;amp;showinfo=0;&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Before jumping into it though, let’s first study the built-in container &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; and see how its transition is implemented. If you are not familiar with &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt;, see &lt;a href=&quot;/2016/06/23/navigation-examples-1.html&quot;&gt;my previous post&lt;/a&gt; for a simple tutorial on how to use it.&lt;/p&gt;
+
+&lt;h1 id=&quot;navigationcardstack-in-a-nutshell&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; in a nutshell&lt;/h1&gt;
+
+&lt;p&gt;With &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt;, screens are arranged in a virtual stack of cards. When a new card is brought into the scene, it slides in from either the right or bottom edge of the screen. When it leaves the scene, it slides back to its origin.&lt;/p&gt;
+
+&lt;div class=&quot;fivecol&quot; style=&quot;float:none; margin-bottom:20px;&quot;&gt;
+&lt;iframe width=&quot;282&quot; height=&quot;500&quot; src=&quot;//www.youtube.com/embed/0e8Irs4gi3M?controls=0&amp;amp;rel=0&amp;amp;showinfo=0;&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;p&gt;How does it work? I dug into its source code and here’s what I’ve found in a nutshell:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated&lt;/code&gt; library is the backbone of transition animations.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; is backed by &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; creates and passes along two generic values that describe the transition state: &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; converts these values to the actual visual style properties of the incoming and outgoing screens.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let’s unfold the whole process one step at a time.&lt;/p&gt;
+
+&lt;h1 id=&quot;a-premier-on-animated&quot;&gt;A premier on &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated&lt;/code&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Animated&lt;/code&gt; is a powerful animation library. As mentioned in the &lt;a href=&quot;https://facebook.github.io/react-native/docs/animated.html&quot;&gt;official document&lt;/a&gt;, it “focuses on declarative relationship between inputs and outputs”, like so:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;rotate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interpolate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;inputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;outputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;0deg&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;360deg&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Here, &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt; is an “&lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.Value&lt;/code&gt;” that represents a generic, high-level state that changes over time. We can then map (interpolate) this value to an actual visual style property (such as &lt;code class=&quot;highlighter-rouge&quot;&gt;rotate&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Whenever the original value changes, the visual style is updated accordingly. You just need to “wire” the animated values together (defining the mapping), and the rest is taken care of automatically. All this happens without going through the standard, setState-diff-render cycle in React. This removes a lot of overhead to ensure the smoothness of our animations.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Animated&lt;/code&gt; can be typically used this way:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Create an &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.Value&lt;/code&gt; and start the animation when appropriate. This code typically lives in upstream where we just care about a generic state and want to delegate the actual rendering to downstream. &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; is a good example of this (we’ll come back to it later).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;timing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;toValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Map the value created above to desired visual style properties, by calling &lt;code class=&quot;highlighter-rouge&quot;&gt;interpolate()&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;rotate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interpolate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+   &lt;span class=&quot;na&quot;&gt;inputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+   &lt;span class=&quot;na&quot;&gt;outputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;0deg&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;360deg&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Use the visual style properties created above in a &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.View&lt;/code&gt; (or &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.Text&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.Image&lt;/code&gt; etc.) to render the component:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;transform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;rotate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}]};&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; ... &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The code above will create a view that spins for 500 milliseconds (the default duration).&lt;/p&gt;
+
+&lt;p&gt;Of course, I’ve only scratched the surface of &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated&lt;/code&gt; here. For more details, I’d recommend you to watch &lt;a href=&quot;https://www.youtube.com/watch?v=xDlfrcM6YBk&amp;amp;t=1333s&quot;&gt;this talk&lt;/a&gt; to see what’s possible, read through the &lt;a href=&quot;https://facebook.github.io/react-native/docs/animated.html&quot;&gt;official document&lt;/a&gt;, and check out &lt;a href=&quot;https://medium.com/react-native-training/react-native-animations-using-the-animated-api-ebe8e0669fae#.p1ngzm78r&quot;&gt;this tutorial&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;cardstack-and-transitioner&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Transitioner&lt;/code&gt;&lt;/h1&gt;
+&lt;p&gt;Now that we know &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated&lt;/code&gt;, it’s time to dig into the source code of &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt;!&lt;/p&gt;
+
+&lt;p&gt;There will be more code than talking from now on. My goal is to provide a guided tour for the source code to make it easier to understand. Only relevant code is shown and the rest are “&lt;code class=&quot;highlighter-rouge&quot;&gt;....&lt;/code&gt;”. It’d perhaps be useful to open the full source on another screen when reading this post.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;kr&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationCardStack&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Component&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;DefaultProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Element&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;NavigationTransitioner&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;configureTransition=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_configureTransition&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;navigationState=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navigationState&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;render=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_render&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So a &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; is bascially a &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt;. Let’s follow along:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;kr&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationTransitioner&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Component&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;componentWillReceiveProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;nextProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;animations&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;timing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;transitionSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;toValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nextProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;animations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;timing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+          &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;transitionSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;toValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;nextProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// update scenes and play the transition&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nextState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parallel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_onTransitionEnd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;We see that two &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.Value&lt;/code&gt;’s are created: &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt; simply goes from &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt; whereas &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; goes from the previous index to the next index of the navigation state. These two values are being animated in parallel. If the index does not change, then only &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt; will be animated.&lt;/p&gt;
+
+&lt;p&gt;When it’s time to render, &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; simply delegates to the &lt;code class=&quot;highlighter-rouge&quot;&gt;render()&lt;/code&gt; function in props:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Element&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_transitionProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_prevTransitionProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The two &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.Value&lt;/code&gt;’s, &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt;, are passed to &lt;code class=&quot;highlighter-rouge&quot;&gt;render()&lt;/code&gt;, as a part of the two parameters &lt;code class=&quot;highlighter-rouge&quot;&gt;_transitionProps&lt;/code&gt; and  &lt;code class=&quot;highlighter-rouge&quot;&gt;_prevTransitionProps&lt;/code&gt;. Here’s how the &lt;code class=&quot;highlighter-rouge&quot;&gt;transitionProps&lt;/code&gt; are constructed:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_transitionProps&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;buildTransitionProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;nextState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;buildTransitionProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationTransitionProps&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Why do we pass &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt; to the &lt;code class=&quot;highlighter-rouge&quot;&gt;props.render&lt;/code&gt; method? Let the implementor of &lt;code class=&quot;highlighter-rouge&quot;&gt;props.render&lt;/code&gt; create the actual animations!&lt;/p&gt;
+
+&lt;h1 id=&quot;interpolating-position&quot;&gt;Interpolating &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt;&lt;/h1&gt;
+
+&lt;p&gt;Do you still remember how &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated&lt;/code&gt; works? We’ll need an &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.View&lt;/code&gt; whose &lt;code class=&quot;highlighter-rouge&quot;&gt;style&lt;/code&gt; prop is an &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.Value&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;It’s safe to guess that there must be something like &lt;code class=&quot;highlighter-rouge&quot;&gt;position.interpolate()&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; when it renders the view. Let’s track it down:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;kr&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationCardStack&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Component&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;DefaultProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;_renderScene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationSceneRendererProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Element&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;isVertical&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;direction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;vertical&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;isVertical&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;NavigationCardStackStyleInterpolator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forVertical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;NavigationCardStackStyleInterpolator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forHorizontal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;NavigationCard&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cardStyle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationCard&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Component&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Element&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;viewStyle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderScene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Each scene is rendered as a &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCard&lt;/code&gt;, which is eventually rendered as an &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.View&lt;/code&gt;.  Bingo!&lt;/p&gt;
+
+&lt;p&gt;Who creates the style for the &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCard&lt;/code&gt;? It’s &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStackStyleInterpolator.forVertical()&lt;/code&gt; (or &lt;code class=&quot;highlighter-rouge&quot;&gt;forHorizontal&lt;/code&gt;)!&lt;/p&gt;
+
+&lt;p&gt;We can then find the secrete sauce that maps (interpolates) &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; to the location, scale and opacity of the cards. Let’s take a quick glance:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// NavigationCardStackStyleInterpolator.js&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;forHorizontal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationSceneRendererProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;inputRange&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.99&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;initWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;outputRange&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;I18nManager&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;isRTL&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;opacity&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interpolate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;inputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;outputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scale&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interpolate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;inputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;outputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;translateY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;translateX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interpolate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;inputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;outputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;opacity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;transform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scale&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;translateX&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;translateY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;We can see that &lt;code class=&quot;highlighter-rouge&quot;&gt;opacity&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;scale&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;translateX&lt;/code&gt; are all interpolations of &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; – they’ll change as &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; changes. This effectively creates the sliding card animation that we’ve seen earlier.&lt;/p&gt;
+
+&lt;p&gt;You probably have questions about how the input/output ranges are set up in this function, but let’s leave them to the next post, where we’ll also start creating our own transitions soon!&lt;/p&gt;
+
+&lt;h1 id=&quot;summary&quot;&gt;Summary&lt;/h1&gt;
+&lt;p&gt;Just to repeat a few key points on how the transition animation works in the built-in &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated&lt;/code&gt; library is the backbone of transition animations.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; is backed by &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; creates and passes along two &lt;code class=&quot;highlighter-rouge&quot;&gt;Animated.Value&lt;/code&gt;’s that describe the transition state: &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; converts these values to &lt;code class=&quot;highlighter-rouge&quot;&gt;translateX&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;opacity&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;scale&lt;/code&gt; properties of the incoming and outgoing screens.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Feel free to ask me questions in the comments below, or suggest topics that you’d like me to write about in future posts. Have a great day!&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Custom Domains with GitHub Pages</title>
@@ -23,8 +319,8 @@
 &lt;h2 id=&quot;the-goal&quot;&gt;The Goal&lt;/h2&gt;
 &lt;ol&gt;
   &lt;li&gt;Host a website (e.g. this blog) on GitHub Pages (well, it’s free and working great, who can resist that!).&lt;/li&gt;
-  &lt;li&gt;Instead of the &lt;code&gt;github.io&lt;/code&gt; domain, I’d like to use my own domain name: &lt;code&gt;reactnativediary.com&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;By default, I’d like to use the &lt;code&gt;www&lt;/code&gt; subdomain and redirect the “naked” domain to the &lt;code&gt;www&lt;/code&gt; subdomain, that is: &lt;code&gt;http://reactnativediary.com ==&amp;gt; http://www.reactnativediary.com&lt;/code&gt;. This is because GitHub strongly recommends the use of &lt;code&gt;www&lt;/code&gt; subdomain:&lt;/li&gt;
+  &lt;li&gt;Instead of the &lt;code class=&quot;highlighter-rouge&quot;&gt;github.io&lt;/code&gt; domain, I’d like to use my own domain name: &lt;code class=&quot;highlighter-rouge&quot;&gt;reactnativediary.com&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;By default, I’d like to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;www&lt;/code&gt; subdomain and redirect the “naked” domain to the &lt;code class=&quot;highlighter-rouge&quot;&gt;www&lt;/code&gt; subdomain, that is: &lt;code class=&quot;highlighter-rouge&quot;&gt;http://reactnativediary.com ==&amp;gt; http://www.reactnativediary.com&lt;/code&gt;. This is because GitHub strongly recommends the use of &lt;code class=&quot;highlighter-rouge&quot;&gt;www&lt;/code&gt; subdomain:&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;blockquote&gt;
@@ -36,33 +332,33 @@
 &lt;/blockquote&gt;
 
 &lt;h2 id=&quot;steps&quot;&gt;Steps&lt;/h2&gt;
-&lt;p&gt;Below I’m going to use this blog &lt;code&gt;reactnativediary.com&lt;/code&gt; as an example, but of course you can replace it with the info and domain of your own site:&lt;/p&gt;
+&lt;p&gt;Below I’m going to use this blog &lt;code class=&quot;highlighter-rouge&quot;&gt;reactnativediary.com&lt;/code&gt; as an example, but of course you can replace it with the info and domain of your own site:&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;First of all, create a public repo on GitHub named &lt;code&gt;react-native-diary-blog&lt;/code&gt;. On its &lt;code&gt;gh-pages&lt;/code&gt; branch, make sure all the site content is there.&lt;/li&gt;
-  &lt;li&gt;On &lt;code&gt;gh-pages&lt;/code&gt; branch, create a file named &lt;code&gt;CNAME&lt;/code&gt; with only one line &lt;code&gt;www.reactnativediary.com&lt;/code&gt;. Note, this file can only include one domain, don’t put multiple domain names here. If you’d like to support multiple domains, you probably want to set up 301 redirects on other domains.&lt;/li&gt;
-  &lt;li&gt;On your DNS provider’s site, create a &lt;code&gt;CNAME&lt;/code&gt; record:&lt;/li&gt;
+  &lt;li&gt;First of all, create a public repo on GitHub named &lt;code class=&quot;highlighter-rouge&quot;&gt;react-native-diary-blog&lt;/code&gt;. On its &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; branch, make sure all the site content is there.&lt;/li&gt;
+  &lt;li&gt;On &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; branch, create a file named &lt;code class=&quot;highlighter-rouge&quot;&gt;CNAME&lt;/code&gt; with only one line &lt;code class=&quot;highlighter-rouge&quot;&gt;www.reactnativediary.com&lt;/code&gt;. Note, this file can only include one domain, don’t put multiple domain names here. If you’d like to support multiple domains, you probably want to set up 301 redirects on other domains.&lt;/li&gt;
+  &lt;li&gt;On your DNS provider’s site, create a &lt;code class=&quot;highlighter-rouge&quot;&gt;CNAME&lt;/code&gt; record:&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;www ==&amp;gt; lintonye.github.io&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Of course, the value of your record should be &lt;code&gt;YOUR-GITHUB-USERNAME.github.io&lt;/code&gt;. See more details &lt;a href=&quot;https://help.github.com/articles/setting-up-a-www-subdomain/#configuring-a-cname-record-with-your-dns-provider&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Of course, the value of your record should be &lt;code class=&quot;highlighter-rouge&quot;&gt;YOUR-GITHUB-USERNAME.github.io&lt;/code&gt;. See more details &lt;a href=&quot;https://help.github.com/articles/setting-up-a-www-subdomain/#configuring-a-cname-record-with-your-dns-provider&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;4. On your DNS provider’s site, create two &lt;code&gt;A&lt;/code&gt; records for both &lt;code&gt;www&lt;/code&gt; and &lt;code&gt;reactnativediary.com&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;4. On your DNS provider’s site, create two &lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt; records for both &lt;code class=&quot;highlighter-rouge&quot;&gt;www&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;reactnativediary.com&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;www                        192.30.252.153
 www                        192.30.252.154
 reactnativediary.com       192.30.252.153
 reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;NOTE: If your DNS provider supports &lt;code&gt;ALIAS&lt;/code&gt; or &lt;code&gt;ANAME&lt;/code&gt; records instead of &lt;code&gt;A&lt;/code&gt; records, see [GitHub’s doc] for details. I don’t personally have any experience in this yet.&lt;/p&gt;
+&lt;p&gt;NOTE: If your DNS provider supports &lt;code class=&quot;highlighter-rouge&quot;&gt;ALIAS&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;ANAME&lt;/code&gt; records instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt; records, see [GitHub’s doc] for details. I don’t personally have any experience in this yet.&lt;/p&gt;
 
 &lt;p&gt;It’ll take a while (in my case a couple of hours) for the DNS setting to take effect. When everything is set up properly, you should be able to see this in the repo’s settings:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/github-custom-domain/github-settings.png&quot; alt=&quot;github-settings&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;This is it. After this setup, GitHub should be able to automatically redirect the “naked” domain (&lt;code&gt;reactnativediary.com&lt;/code&gt;) to the &lt;code&gt;www&lt;/code&gt; subdomain. Hopefully you’ll find it more useful than GitHub’s &lt;a href=&quot;https://help.github.com/articles/setting-up-an-apex-domain/&quot;&gt;this&lt;/a&gt;, &lt;a href=&quot;https://help.github.com/articles/setting-up-a-www-subdomain/&quot;&gt;this&lt;/a&gt;, or &lt;a href=&quot;https://help.github.com/articles/using-a-custom-domain-with-github-pages/&quot;&gt;this&lt;/a&gt; pages.&lt;/p&gt;
+&lt;p&gt;This is it. After this setup, GitHub should be able to automatically redirect the “naked” domain (&lt;code class=&quot;highlighter-rouge&quot;&gt;reactnativediary.com&lt;/code&gt;) to the &lt;code class=&quot;highlighter-rouge&quot;&gt;www&lt;/code&gt; subdomain. Hopefully you’ll find it more useful than GitHub’s &lt;a href=&quot;https://help.github.com/articles/setting-up-an-apex-domain/&quot;&gt;this&lt;/a&gt;, &lt;a href=&quot;https://help.github.com/articles/setting-up-a-www-subdomain/&quot;&gt;this&lt;/a&gt;, or &lt;a href=&quot;https://help.github.com/articles/using-a-custom-domain-with-github-pages/&quot;&gt;this&lt;/a&gt; pages.&lt;/p&gt;
 </content>
  </entry>
  
@@ -72,16 +368,16 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
    <published>2016-06-23T00:00:00-07:00</published>
    <updated>2016-06-23</updated>
    <id>http://lintonye.github.io/2016/06/23/navigation-examples-1</id>
-   <content type="html">&lt;p&gt;Thanks to &lt;a href=&quot;https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.4zl60befe&quot;&gt;Nader Dabit’s post&lt;/a&gt;, I wasted no time when learning about navigation in React Native. The &lt;a href=&quot;http://facebook.github.io/react-native/docs/navigator.html&quot;&gt;&lt;code&gt;Navigator&lt;/code&gt;&lt;/a&gt; will be soon &lt;a href=&quot;https://github.com/ericvicenti/navigation-rfc/blob/master/Docs/NavigationOverview.md&quot;&gt;deprecated&lt;/a&gt; and it will be replaced by a different approach, currently called &lt;code&gt;NavigationExperimental&lt;/code&gt;. However, I haven’t found much documentation that is easy to follow for a newbie (me) who doesn’t have much experience in Flux, Redux etc.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Thanks to &lt;a href=&quot;https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.4zl60befe&quot;&gt;Nader Dabit’s post&lt;/a&gt;, I wasted no time when learning about navigation in React Native. The &lt;a href=&quot;http://facebook.github.io/react-native/docs/navigator.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Navigator&lt;/code&gt;&lt;/a&gt; will be soon &lt;a href=&quot;https://github.com/ericvicenti/navigation-rfc/blob/master/Docs/NavigationOverview.md&quot;&gt;deprecated&lt;/a&gt; and it will be replaced by a different approach, currently called &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationExperimental&lt;/code&gt;. However, I haven’t found much documentation that is easy to follow for a newbie (me) who doesn’t have much experience in Flux, Redux etc.&lt;/p&gt;
 
 &lt;p&gt;I decided to write a simpler tutorial to help myself (and hopefully you too) understand how things work.&lt;/p&gt;
 
-&lt;p&gt;In a nutshell, &lt;code&gt;NavigationExperimental&lt;/code&gt; handles navigation with three things:&lt;/p&gt;
+&lt;p&gt;In a nutshell, &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationExperimental&lt;/code&gt; handles navigation with three things:&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;&lt;code&gt;NavigationState&lt;/code&gt;: exactly as its name says&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;NavigationStateUtils&lt;/code&gt;: helper functions for manipulating navigation states&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;NavigationCardStack&lt;/code&gt;: the container that renders scenes based on its navigation state&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationState&lt;/code&gt;: exactly as its name says&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationStateUtils&lt;/code&gt;: helper functions for manipulating navigation states&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt;: the container that renders scenes based on its navigation state&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;Let me expand each of these while building some simple navigation like this:&lt;/p&gt;
@@ -90,20 +386,20 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;iframe width=&quot;282&quot; height=&quot;500&quot; src=&quot;//www.youtube.com/embed/enkPGpBBkFE?controls=0&amp;amp;rel=0&amp;amp;showinfo=0&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;h2 id=&quot;navigationstate&quot;&gt;&lt;code&gt;NavigationState&lt;/code&gt;&lt;/h2&gt;
-&lt;p&gt;According to the &lt;a href=&quot;https://github.com/ericvicenti/navigation-rfc/blob/master/Docs/NavigationOverview.md#navigator&quot;&gt;proposal (RFC)&lt;/a&gt; of the new navigation system, the old &lt;code&gt;Navigator&lt;/code&gt; “owns navigation state and has an imperative API, which goes against the React philosophy of single-directional data flow”. The fix is to define the navigation states declaratively, basically the same way as other things in React: declaring it as a state on the top level component and pass it down in the hierarchy as props.&lt;/p&gt;
+&lt;h2 id=&quot;navigationstate&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationState&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;According to the &lt;a href=&quot;https://github.com/ericvicenti/navigation-rfc/blob/master/Docs/NavigationOverview.md#navigator&quot;&gt;proposal (RFC)&lt;/a&gt; of the new navigation system, the old &lt;code class=&quot;highlighter-rouge&quot;&gt;Navigator&lt;/code&gt; “owns navigation state and has an imperative API, which goes against the React philosophy of single-directional data flow”. The fix is to define the navigation states declaratively, basically the same way as other things in React: declaring it as a state on the top level component and pass it down in the hierarchy as props.&lt;/p&gt;
 
 &lt;p&gt;A typical navigation state looks something like this:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;nl&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// =&amp;gt; index of the active scene&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// =&amp;gt; navigation stack&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// =&amp;gt; navigation stack&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;The &lt;code&gt;NavigationCardStack&lt;/code&gt; is aware of this &lt;code&gt;NavigationState&lt;/code&gt; (actually passed in as a prop) and renders scenes accordingly.&lt;/p&gt;
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; is aware of this &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationState&lt;/code&gt; (actually passed in as a prop) and renders scenes accordingly.&lt;/p&gt;
 
 &lt;p&gt;In our simple example app, we can assign the initial navigation state like so:&lt;/p&gt;
 
@@ -121,47 +417,47 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;This means that the entry of our app is &lt;code&gt;screen1&lt;/code&gt;, and there is initially only one screen in the stack.&lt;/p&gt;
+&lt;p&gt;This means that the entry of our app is &lt;code class=&quot;highlighter-rouge&quot;&gt;screen1&lt;/code&gt;, and there is initially only one screen in the stack.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;BTW: One thing I’m not too sure here - why is the stack called &lt;code&gt;routes&lt;/code&gt; instead of &lt;code&gt;scenes&lt;/code&gt;? There seems indeed a difference between &lt;code&gt;scenes&lt;/code&gt; and &lt;code&gt;routes&lt;/code&gt; if you look at the &lt;a href=&quot;#sceneProps&quot;&gt;&lt;code&gt;sceneProps&lt;/code&gt;&lt;/a&gt; passed into the &lt;code&gt;renderScene&lt;/code&gt; function.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;BTW: One thing I’m not too sure here - why is the stack called &lt;code class=&quot;highlighter-rouge&quot;&gt;routes&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;scenes&lt;/code&gt;? There seems indeed a difference between &lt;code class=&quot;highlighter-rouge&quot;&gt;scenes&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;routes&lt;/code&gt; if you look at the &lt;a href=&quot;#sceneProps&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sceneProps&lt;/code&gt;&lt;/a&gt; passed into the &lt;code class=&quot;highlighter-rouge&quot;&gt;renderScene&lt;/code&gt; function.&lt;/em&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;manipulating-states-with-navigationstateutils&quot;&gt;Manipulating States with &lt;code&gt;NavigationStateUtils&lt;/code&gt;&lt;/h2&gt;
+&lt;h2 id=&quot;manipulating-states-with-navigationstateutils&quot;&gt;Manipulating States with &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationStateUtils&lt;/code&gt;&lt;/h2&gt;
 
 &lt;p&gt;Now if we click “Go screen2” and then click “Go screen3”, two scenes will be pushed into the stack. The state will look like this:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;nl&quot;&gt;navigation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;nl&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen3&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen3&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;At this point if we hit the “Go Back” button, &lt;code&gt;screen3&lt;/code&gt; will be popped off from the stack, making &lt;code&gt;screen2&lt;/code&gt; active (on the top of the stack).&lt;/p&gt;
+&lt;p&gt;At this point if we hit the “Go Back” button, &lt;code class=&quot;highlighter-rouge&quot;&gt;screen3&lt;/code&gt; will be popped off from the stack, making &lt;code class=&quot;highlighter-rouge&quot;&gt;screen2&lt;/code&gt; active (on the top of the stack).&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;nl&quot;&gt;navigation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;nl&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;These stack pushing/popping operations can be done with the helper functions in the &lt;code&gt;NavigationStateUtils&lt;/code&gt; module (&lt;code&gt;push()&lt;/code&gt;, &lt;code&gt;pop()&lt;/code&gt; and &lt;code&gt;jumpTo()&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;These stack pushing/popping operations can be done with the helper functions in the &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationStateUtils&lt;/code&gt; module (&lt;code class=&quot;highlighter-rouge&quot;&gt;push()&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pop()&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;jumpTo()&lt;/code&gt;).&lt;/p&gt;
 
 &lt;p&gt;Below are the (flow) type definitions of these functions in the &lt;a href=&quot;https://github.com/facebook/react-native/blob/master/Libraries/NavigationExperimental/NavigationStateUtils.js&quot;&gt;source code&lt;/a&gt;:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;route&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationRoute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationRoute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;jumpTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;jumpTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavigationState&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;These functions return a new &lt;code&gt;NavigationState&lt;/code&gt; which we can use to make the navigation happen by calling &lt;code&gt;this.setState()&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;These functions return a new &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationState&lt;/code&gt; which we can use to make the navigation happen by calling &lt;code class=&quot;highlighter-rouge&quot;&gt;this.setState()&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;_navigate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;c1&quot;&gt;// NavigationStateUtils is used in reduceNavState()&lt;/span&gt;
@@ -173,30 +469,30 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Here this &lt;code&gt;reduceNavState&lt;/code&gt; simply uses &lt;code&gt;NavigationStateUtils&lt;/code&gt; to push or pop routes from the stack, but more complex navigation mechanisms can be implemented as needed (e.g. independent navigation stacks within tabs as in one of the &lt;a href=&quot;https://github.com/facebook/react-native/blob/master/Examples/UIExplorer/NavigationExperimental/NavigationCardStack-NavigationHeader-Tabs-example.js&quot;&gt;official examples&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Here this &lt;code class=&quot;highlighter-rouge&quot;&gt;reduceNavState&lt;/code&gt; simply uses &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationStateUtils&lt;/code&gt; to push or pop routes from the stack, but more complex navigation mechanisms can be implemented as needed (e.g. independent navigation stacks within tabs as in one of the &lt;a href=&quot;https://github.com/facebook/react-native/blob/master/Examples/UIExplorer/NavigationExperimental/NavigationCardStack-NavigationHeader-Tabs-example.js&quot;&gt;official examples&lt;/a&gt;).&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reduceNavState&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;push&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;push&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
       &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;route&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavStateUtils&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;pop&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;pop&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavStateUtils&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;navState&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;With the &lt;code&gt;_navigate()&lt;/code&gt; function in hand, it’s now fairly easy to move around in our app, for example, creating a button that links to &lt;code&gt;screen2&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;With the &lt;code class=&quot;highlighter-rouge&quot;&gt;_navigate()&lt;/code&gt; function in hand, it’s now fairly easy to move around in our app, for example, creating a button that links to &lt;code class=&quot;highlighter-rouge&quot;&gt;screen2&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Button&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;onPress&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_navigate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;push&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})}&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;If you are not familiar with &lt;code&gt;bind()&lt;/code&gt;, it’ll create a new function that executes as if we are calling &lt;code&gt;_navigate({type: &#39;push&#39;, key: &#39;screen2&#39;})&lt;/code&gt;. See &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind&quot;&gt;here&lt;/a&gt; for more information about &lt;code&gt;bind&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;If you are not familiar with &lt;code class=&quot;highlighter-rouge&quot;&gt;bind()&lt;/code&gt;, it’ll create a new function that executes as if we are calling &lt;code class=&quot;highlighter-rouge&quot;&gt;_navigate({type: &#39;push&#39;, key: &#39;screen2&#39;})&lt;/code&gt;. See &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind&quot;&gt;here&lt;/a&gt; for more information about &lt;code class=&quot;highlighter-rouge&quot;&gt;bind&lt;/code&gt;.&lt;/p&gt;
 
-&lt;h2 id=&quot;navigationcardstack&quot;&gt;&lt;code&gt;NavigationCardStack&lt;/code&gt;&lt;/h2&gt;
-&lt;p&gt;The last piece of the puzzle is &lt;code&gt;NavigationCardStack&lt;/code&gt;, a component acting as a container that renders scenes depending on the navigation state.&lt;/p&gt;
+&lt;h2 id=&quot;navigationcardstack&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;The last piece of the puzzle is &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt;, a component acting as a container that renders scenes depending on the navigation state.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;NavigationCardStack&lt;/span&gt;
   &lt;span class=&quot;nx&quot;&gt;renderScene&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_renderScene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// a function that performs the rendering&lt;/span&gt;
@@ -205,21 +501,21 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
   &lt;span class=&quot;nx&quot;&gt;onNavigate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_goBack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// this has been renamed to onNavigateBack on master&lt;/span&gt;
 &lt;span class=&quot;sr&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;When the &lt;code&gt;renderScene&lt;/code&gt; function is called, it’ll be provided with a &lt;code&gt;sceneProps&lt;/code&gt; parameter which looks something like this:&lt;/p&gt;
+&lt;p&gt;When the &lt;code class=&quot;highlighter-rouge&quot;&gt;renderScene&lt;/code&gt; function is called, it’ll be provided with a &lt;code class=&quot;highlighter-rouge&quot;&gt;sceneProps&lt;/code&gt; parameter which looks something like this:&lt;/p&gt;
 
 &lt;p&gt;&lt;a name=&quot;sceneProps&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;layout&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;height&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;568&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;initHeight&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;568&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;initWidth&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;360&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;isMeasured&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;width&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;360&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;layout&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;height&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;568&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;initHeight&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;568&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;initWidth&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;360&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;isMeasured&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;width&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;360&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;navigationState&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;routes&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;navigationState&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;routes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;s2&quot;&gt;&quot;key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;screen1&quot;&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
@@ -228,17 +524,17 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;position&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;progress&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;scene&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;isStale&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;key&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;scene_screen2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;route&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;s2&quot;&gt;&quot;key&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;screen2&quot;&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;position&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;progress&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;scene&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;isStale&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;scene_screen2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;route&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;&quot;key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;screen2&quot;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;scenes&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;scenes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
       &lt;span class=&quot;s2&quot;&gt;&quot;index&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
       &lt;span class=&quot;s2&quot;&gt;&quot;isStale&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
@@ -258,24 +554,24 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
   &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;There’s a lot of stuff here, but it looks like &lt;code&gt;scene.route.key&lt;/code&gt; here refers to the key of the active scene (I’ll update this after they finalize the API). We can then decide what screen to render depending on its value, typically in a &lt;code&gt;switch&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;There’s a lot of stuff here, but it looks like &lt;code class=&quot;highlighter-rouge&quot;&gt;scene.route.key&lt;/code&gt; here refers to the key of the active scene (I’ll update this after they finalize the API). We can then decide what screen to render depending on its value, typically in a &lt;code class=&quot;highlighter-rouge&quot;&gt;switch&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;_renderScene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sceneProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sceneProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen1&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
         &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Screen1&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;goScreen2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_goScreen2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
           &lt;span class=&quot;nx&quot;&gt;goScreen3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_goScreen3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
           &lt;span class=&quot;p&quot;&gt;{...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sceneProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
 &lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen2&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
         &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Screen2&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;goBack&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_goBack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
           &lt;span class=&quot;nx&quot;&gt;goScreen3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_goScreen3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
           &lt;span class=&quot;p&quot;&gt;{...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sceneProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
 &lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen3&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;screen3&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -283,7 +579,7 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Of course you have the freedom of rendering anything you like, for example, you can do a pattern matching on the route key and render the same screen for a class of scenes.&lt;/p&gt;
 
 &lt;h2 id=&quot;support-for-back-button-on-android&quot;&gt;Support for Back button on Android&lt;/h2&gt;
-&lt;p&gt;On Android, there is a Back button that needs some special treatment when implementing navigation. The standard behavior is to go back to the previous screen until the app exits. We can use the &lt;a href=&quot;http://facebook.github.io/react-native/docs/backandroid.html&quot;&gt;&lt;code&gt;BackAndroid&lt;/code&gt;&lt;/a&gt; module to pop up scenes from the stack like so:&lt;/p&gt;
+&lt;p&gt;On Android, there is a Back button that needs some special treatment when implementing navigation. The standard behavior is to go back to the previous screen until the app exits. We can use the &lt;a href=&quot;http://facebook.github.io/react-native/docs/backandroid.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;BackAndroid&lt;/code&gt;&lt;/a&gt; module to pop up scenes from the stack like so:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;NavExample&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Component&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;nx&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -301,10 +597,10 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;source-code&quot;&gt;Source Code&lt;/h2&gt;
-&lt;p&gt;You can find the source code of the example app &lt;a href=&quot;https://github.com/lintonye/react-native-diary/tree/master/NavExamples&quot;&gt;here&lt;/a&gt;. Make sure you use React Native 0.28.0+: &lt;code&gt;react-native -v&lt;/code&gt;. You can upgrade it using &lt;code&gt;npm install --save react-native@0.28.0&lt;/code&gt; (or the latest version).&lt;/p&gt;
+&lt;p&gt;You can find the source code of the example app &lt;a href=&quot;https://github.com/lintonye/react-native-diary/tree/master/NavExamples&quot;&gt;here&lt;/a&gt;. Make sure you use React Native 0.28.0+: &lt;code class=&quot;highlighter-rouge&quot;&gt;react-native -v&lt;/code&gt;. You can upgrade it using &lt;code class=&quot;highlighter-rouge&quot;&gt;npm install --save react-native@0.28.0&lt;/code&gt; (or the latest version).&lt;/p&gt;
 
 &lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;So here you go, three parts of &lt;code&gt;NavigationExperimental&lt;/code&gt; work together to complete the story: &lt;code&gt;NavigationState&lt;/code&gt;, &lt;code&gt;NavigationStateUtils&lt;/code&gt; and &lt;code&gt;NavigationCardStack&lt;/code&gt;. Navigation states are now good React citizens as they are just normal states or props defined declaratively. This makes the navigation code easier to follow/debug and also open some interesting opportunities, for example, the navigation state can be persisted to the disk during app refreshes.&lt;/p&gt;
+&lt;p&gt;So here you go, three parts of &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationExperimental&lt;/code&gt; work together to complete the story: &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationState&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationStateUtils&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt;. Navigation states are now good React citizens as they are just normal states or props defined declaratively. This makes the navigation code easier to follow/debug and also open some interesting opportunities, for example, the navigation state can be persisted to the disk during app refreshes.&lt;/p&gt;
 
 &lt;p&gt;Did you find this post useful? Do you have other things about navigation to share with us? Chime in below in the comments! Thanks for reading.&lt;/p&gt;
 </content>
@@ -389,11 +685,11 @@ reactnativediary.com       192.30.252.154&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Here are some highlights from my notes since I started working on this project in May. If you are really curious, feel free to check out the &lt;a href=&quot;https://www.evernote.com/l/AFutRbAf2hBI6bdfDtTwn3TkcDacSH8OHGE&quot;&gt;raw notes&lt;/a&gt; (I’m updating it live every day).&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;On Android’s new emulator: use &lt;code&gt;cmd+M&lt;/code&gt; to bring up the dev menu&lt;/li&gt;
-  &lt;li&gt;Debugging on a device: &lt;code&gt;adb reverse&lt;/code&gt; does not produce any error message if the port on the host is already being occupied. If you see the red screen that complains about connectivity, make sure to free up the 8081 port on your computer.&lt;/li&gt;
+  &lt;li&gt;On Android’s new emulator: use &lt;code class=&quot;highlighter-rouge&quot;&gt;cmd+M&lt;/code&gt; to bring up the dev menu&lt;/li&gt;
+  &lt;li&gt;Debugging on a device: &lt;code class=&quot;highlighter-rouge&quot;&gt;adb reverse&lt;/code&gt; does not produce any error message if the port on the host is already being occupied. If you see the red screen that complains about connectivity, make sure to free up the 8081 port on your computer.&lt;/li&gt;
   &lt;li&gt;Hot reloading sounds cool, but it still seems unstable as of 0.25.1. Often times it yells at you with incomprehensible error messages (see the raw notes). I had to manually reload JS.&lt;/li&gt;
-  &lt;li&gt;There is no &lt;code&gt;&amp;lt;Button&amp;gt;&lt;/code&gt; out of the box! You’d have to build your own with things like &lt;code&gt;&amp;lt;TouchableHighlight&amp;gt;&lt;/code&gt;, but I’m still scratching my head why &lt;code&gt;&amp;lt;TouchableNativeFeedback&amp;gt;&lt;/code&gt; does not give any feedback at all in my code! The fact that I haven’t found anything yet on SO indicates that I must have made a really silly mistake. I’ll shamelessly write about it when I figure it out.&lt;/li&gt;
-  &lt;li&gt;For connecting screens together, &lt;code&gt;&amp;lt;Navigator&amp;gt;&lt;/code&gt; is the choice of weapon for now, but it seems it’ll be replaced soon by something featuring single-directional data flow. I only read about it &lt;a href=&quot;https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.3g05z3oh1&quot;&gt;here&lt;/a&gt; and haven’t found any proof of it, so take it with some salt.&lt;/li&gt;
+  &lt;li&gt;There is no &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Button&amp;gt;&lt;/code&gt; out of the box! You’d have to build your own with things like &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;TouchableHighlight&amp;gt;&lt;/code&gt;, but I’m still scratching my head why &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;TouchableNativeFeedback&amp;gt;&lt;/code&gt; does not give any feedback at all in my code! The fact that I haven’t found anything yet on SO indicates that I must have made a really silly mistake. I’ll shamelessly write about it when I figure it out.&lt;/li&gt;
+  &lt;li&gt;For connecting screens together, &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Navigator&amp;gt;&lt;/code&gt; is the choice of weapon for now, but it seems it’ll be replaced soon by something featuring single-directional data flow. I only read about it &lt;a href=&quot;https://medium.com/@dabit3/first-look-react-native-navigator-experimental-9a7cf39a615b#.3g05z3oh1&quot;&gt;here&lt;/a&gt; and haven’t found any proof of it, so take it with some salt.&lt;/li&gt;
 &lt;/ul&gt;
 </content>
  </entry>

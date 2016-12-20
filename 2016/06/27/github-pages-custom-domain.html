@@ -84,7 +84,8 @@
         By <address><a rel="author" href="" title="Linton Ye" target="_blank">Linton Ye</a></address> &mdash;
         <time pubdate datetime="2016-27-June" title="Jun 27, 2016">Jun 27, 2016</time> &mdash;
         
-2 min read
+4 min read
+
       </div>
       <h1 class="title">Custom Domains with GitHub Pages</h1>
       
@@ -96,8 +97,8 @@
 <h2 id="the-goal">The Goal</h2>
 <ol>
   <li>Host a website (e.g. this blog) on GitHub Pages (well, it’s free and working great, who can resist that!).</li>
-  <li>Instead of the <code>github.io</code> domain, I’d like to use my own domain name: <code>reactnativediary.com</code></li>
-  <li>By default, I’d like to use the <code>www</code> subdomain and redirect the “naked” domain to the <code>www</code> subdomain, that is: <code>http://reactnativediary.com ==&gt; http://www.reactnativediary.com</code>. This is because GitHub strongly recommends the use of <code>www</code> subdomain:</li>
+  <li>Instead of the <code class="highlighter-rouge">github.io</code> domain, I’d like to use my own domain name: <code class="highlighter-rouge">reactnativediary.com</code></li>
+  <li>By default, I’d like to use the <code class="highlighter-rouge">www</code> subdomain and redirect the “naked” domain to the <code class="highlighter-rouge">www</code> subdomain, that is: <code class="highlighter-rouge">http://reactnativediary.com ==&gt; http://www.reactnativediary.com</code>. This is because GitHub strongly recommends the use of <code class="highlighter-rouge">www</code> subdomain:</li>
 </ol>
 
 <blockquote>
@@ -109,33 +110,33 @@
 </blockquote>
 
 <h2 id="steps">Steps</h2>
-<p>Below I’m going to use this blog <code>reactnativediary.com</code> as an example, but of course you can replace it with the info and domain of your own site:</p>
+<p>Below I’m going to use this blog <code class="highlighter-rouge">reactnativediary.com</code> as an example, but of course you can replace it with the info and domain of your own site:</p>
 
 <ol>
-  <li>First of all, create a public repo on GitHub named <code>react-native-diary-blog</code>. On its <code>gh-pages</code> branch, make sure all the site content is there.</li>
-  <li>On <code>gh-pages</code> branch, create a file named <code>CNAME</code> with only one line <code>www.reactnativediary.com</code>. Note, this file can only include one domain, don’t put multiple domain names here. If you’d like to support multiple domains, you probably want to set up 301 redirects on other domains.</li>
-  <li>On your DNS provider’s site, create a <code>CNAME</code> record:</li>
+  <li>First of all, create a public repo on GitHub named <code class="highlighter-rouge">react-native-diary-blog</code>. On its <code class="highlighter-rouge">gh-pages</code> branch, make sure all the site content is there.</li>
+  <li>On <code class="highlighter-rouge">gh-pages</code> branch, create a file named <code class="highlighter-rouge">CNAME</code> with only one line <code class="highlighter-rouge">www.reactnativediary.com</code>. Note, this file can only include one domain, don’t put multiple domain names here. If you’d like to support multiple domains, you probably want to set up 301 redirects on other domains.</li>
+  <li>On your DNS provider’s site, create a <code class="highlighter-rouge">CNAME</code> record:</li>
 </ol>
 
 <div class="highlight"><pre><code class="language-text" data-lang="text">www ==&gt; lintonye.github.io</code></pre></div>
 
-<p>Of course, the value of your record should be <code>YOUR-GITHUB-USERNAME.github.io</code>. See more details <a href="https://help.github.com/articles/setting-up-a-www-subdomain/#configuring-a-cname-record-with-your-dns-provider">here</a>.</p>
+<p>Of course, the value of your record should be <code class="highlighter-rouge">YOUR-GITHUB-USERNAME.github.io</code>. See more details <a href="https://help.github.com/articles/setting-up-a-www-subdomain/#configuring-a-cname-record-with-your-dns-provider">here</a>.</p>
 
-<p>4. On your DNS provider’s site, create two <code>A</code> records for both <code>www</code> and <code>reactnativediary.com</code>:</p>
+<p>4. On your DNS provider’s site, create two <code class="highlighter-rouge">A</code> records for both <code class="highlighter-rouge">www</code> and <code class="highlighter-rouge">reactnativediary.com</code>:</p>
 
 <div class="highlight"><pre><code class="language-text" data-lang="text">www                        192.30.252.153
 www                        192.30.252.154
 reactnativediary.com       192.30.252.153
 reactnativediary.com       192.30.252.154</code></pre></div>
 
-<p>NOTE: If your DNS provider supports <code>ALIAS</code> or <code>ANAME</code> records instead of <code>A</code> records, see [GitHub’s doc] for details. I don’t personally have any experience in this yet.</p>
+<p>NOTE: If your DNS provider supports <code class="highlighter-rouge">ALIAS</code> or <code class="highlighter-rouge">ANAME</code> records instead of <code class="highlighter-rouge">A</code> records, see [GitHub’s doc] for details. I don’t personally have any experience in this yet.</p>
 
 <p>It’ll take a while (in my case a couple of hours) for the DNS setting to take effect. When everything is set up properly, you should be able to see this in the repo’s settings:</p>
 
 <p><img src="/images/github-custom-domain/github-settings.png" alt="github-settings" /></p>
 
 <h2 id="conclusion">Conclusion</h2>
-<p>This is it. After this setup, GitHub should be able to automatically redirect the “naked” domain (<code>reactnativediary.com</code>) to the <code>www</code> subdomain. Hopefully you’ll find it more useful than GitHub’s <a href="https://help.github.com/articles/setting-up-an-apex-domain/">this</a>, <a href="https://help.github.com/articles/setting-up-a-www-subdomain/">this</a>, or <a href="https://help.github.com/articles/using-a-custom-domain-with-github-pages/">this</a> pages.</p>
+<p>This is it. After this setup, GitHub should be able to automatically redirect the “naked” domain (<code class="highlighter-rouge">reactnativediary.com</code>) to the <code class="highlighter-rouge">www</code> subdomain. Hopefully you’ll find it more useful than GitHub’s <a href="https://help.github.com/articles/setting-up-an-apex-domain/">this</a>, <a href="https://help.github.com/articles/setting-up-a-www-subdomain/">this</a>, or <a href="https://help.github.com/articles/using-a-custom-domain-with-github-pages/">this</a> pages.</p>
 
       
 <div class="social">
@@ -175,6 +176,13 @@ reactnativediary.com       192.30.252.154</code></pre></div>
           <span class="muted">Founder of jimu Labs. Full-stack developer, toolsmith, UI designer, entrepreneur and lifelong learner.</span>
         </p>
       </address>
+      
+      
+      <section class="post_summary">
+        <h3 class="title">Next up: <a href="/2016/12/20/navigation-experimental-custom-transition-1.html" rel="prefetch">NavigationExperimental: Custom Transitions (1)</a></h3>
+        <p>A series of posts about creating custom transitions using NavigationExperimental</p>
+        <hr>
+      </section>
        
       
       
