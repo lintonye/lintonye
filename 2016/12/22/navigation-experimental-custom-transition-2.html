@@ -265,14 +265,13 @@
   </div>
 
   
-<div class="highlight"><pre><code class="language-jsx" data-lang="jsx"><span class="kr">const</span> <span class="nx">inputRange</span> <span class="o">=</span> <span class="p">[</span><span class="nx">index</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">index</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
-  <span class="kr">const</span> <span class="nx">opacity</span> <span class="o">=</span> <span class="nx">position</span><span class="p">.</span><span class="nx">interpolate</span><span class="p">({</span>
-      <span class="nx">inputRange</span><span class="p">,</span>
-      <span class="na">outputRange</span><span class="p">:</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<div class="highlight"><pre><code class="language-jsx" data-lang="jsx"><span class="kr">const</span> <span class="nx">opacity</span> <span class="o">=</span> <span class="nx">position</span><span class="p">.</span><span class="nx">interpolate</span><span class="p">({</span>
+      <span class="na">inputRange</span><span class="p">:</span> <span class="p">[</span><span class="nx">index</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">index</span><span class="o">+</span><span class="mf">0.999</span><span class="p">,</span> <span class="nx">index</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+      <span class="na">outputRange</span><span class="p">:</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
   <span class="p">});</span>
 
   <span class="kr">const</span> <span class="nx">translateY</span> <span class="o">=</span> <span class="nx">position</span><span class="p">.</span><span class="nx">interpolate</span><span class="p">({</span>
-      <span class="nx">inputRange</span><span class="p">,</span>
+      <span class="na">inputRange</span><span class="p">:</span> <span class="p">[</span><span class="nx">index</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">index</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
       <span class="na">outputRange</span><span class="p">:</span> <span class="p">[</span><span class="mi">150</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
   <span class="p">})</span></code></pre></div>
 
