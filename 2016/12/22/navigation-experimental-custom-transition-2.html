@@ -82,7 +82,7 @@
         By <address><a rel="author" href="" title="Linton Ye" target="_blank">Linton Ye</a></address> &mdash;
         <time pubdate datetime="2016-22-December" title="Dec 22, 2016">Dec 22, 2016</time> &mdash;
         
-12 min read
+13 min read
 
       </div>
       <h1 class="title">NavigationExperimental: Custom Transitions (2)</h1>
@@ -224,7 +224,16 @@
 
 <p><img src="/images/navigation-custom-transition/cliff-diagram.png" alt="opacity code" /></p>
 
-<p>Sounds useful, right? Let’s recap what we’ve learned about the <code class="highlighter-rouge">NavigationCardStack</code> so far:</p>
+<p>The cliff, in the card stack transition in particular, is an important performance tuning. Because composing translucent scenes is expensive, we should always try to minimize the number of translucent layers. Here when the photo grid scene is completely covered, we want to set its opacity to <code class="highlighter-rouge">0</code> to avoid unnecessary composition.</p>
+
+<p>In comparison, the code below suffers from composition overhead because it leaves the opacity of photo grid non-zero even when it’s off screen:</p>
+
+<div class="highlight"><pre><code class="language-jsx" data-lang="jsx"><span class="kr">const</span> <span class="nx">opacity</span> <span class="o">=</span> <span class="nx">position</span><span class="p">.</span><span class="nx">interpolate</span><span class="p">({</span>
+  <span class="na">inputRange</span><span class="p">:</span>  <span class="p">[</span><span class="nx">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+  <span class="na">outputRange</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span>         <span class="mi">1</span><span class="p">,</span>     <span class="mf">0.3</span>      <span class="p">],</span>
+<span class="p">});</span></code></pre></div>
+
+<p>Let’s recap what we’ve learned about the <code class="highlighter-rouge">NavigationCardStack</code> so far:</p>
 
 <ul>
   <li><code class="highlighter-rouge">inputRange: [index - 1, index, index + 1]</code>: with this single input range, we are able to express concisely both photo grid and photo detail scenes. If it’s rendering the photo grid scene, the range <code class="highlighter-rouge">[index, index + 1]</code> is effective; if it’s rendering the photo detail scene, the range <code class="highlighter-rouge">[index - 1, index]</code> is effective.</li>
@@ -235,7 +244,7 @@
 <p>Once we’ve learned about the above, it’s almost trivial to create the transitions I listed at the beginning of this post. I’ll just list the interpolation code below for your viewing pleasure. You can also check out the complete code on github (<a href="https://github.com/lintonye/react-native-diary/blob/master/transitions/app/CrossFadeTransitioner.js">this</a> and <a href="https://github.com/lintonye/react-native-diary/blob/master/transitions/app/AndroidDefaultTransitioner.js">this</a>).</p>
 
 <!-- crossFade -->
-<div style="display: flex; flex-direction: row">
+<div style="display: flex; flex-direction: row; align-items: center;">
   <div class="fivecol" style="float:none; margin-right:20px; ">
   <iframe width="225" height="400" src="//www.youtube.com/embed/6_BGrOQQlko?controls=0&amp;rel=0&amp;showinfo=0;" frameborder="0" allowfullscreen=""></iframe>
   </div>
@@ -250,7 +259,7 @@
 </div>
 
 <!-- androidDefault -->
-<div style="display: flex; flex-direction: row">
+<div style="display: flex; flex-direction: row; align-items: center;">
   <div class="fivecol" style="float:none; margin-bottom:20px; margin-right:20px;">
   <iframe width="225" height="400" src="//www.youtube.com/embed/oVwq1QDcnOw?controls=0&amp;rel=0&amp;showinfo=0;" frameborder="0" allowfullscreen=""></iframe>
   </div>
@@ -273,6 +282,8 @@
 <p>Now that we’ve learned about how to concisely declare input and output ranges for all scenes and the “<code class="highlighter-rouge">0.99</code>” trick to create cliffs in the output range. We also created a couple of custom transitions without even breaking a sweat.</p>
 
 <p>In the next post, we’ll start working on something a bit more challenging, the <a href="https://www.youtube.com/embed/efPFJkxa-BQ">shared element transition</a>! Feel free to ask me questions in the comments below, or suggest topics that you’d like me to write about in future posts. Have a great day!</p>
+
+<p><em>Special thanks to <a href="https://www.facebook.com/eric.v.vicenti">Eric Vlad Vicenti</a> who reviewed this post and provided invaluable feedback!</em></p>
 
       
 <div class="social">

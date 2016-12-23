@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2016-12-22T13:27:36-08:00</updated>
+ <updated>2016-12-22T16:53:35-08:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -152,7 +152,16 @@
 
 &lt;p&gt;&lt;img src=&quot;/images/navigation-custom-transition/cliff-diagram.png&quot; alt=&quot;opacity code&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Sounds useful, right? Let’s recap what we’ve learned about the &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; so far:&lt;/p&gt;
+&lt;p&gt;The cliff, in the card stack transition in particular, is an important performance tuning. Because composing translucent scenes is expensive, we should always try to minimize the number of translucent layers. Here when the photo grid scene is completely covered, we want to set its opacity to &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt; to avoid unnecessary composition.&lt;/p&gt;
+
+&lt;p&gt;In comparison, the code below suffers from composition overhead because it leaves the opacity of photo grid non-zero even when it’s off screen:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;opacity&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interpolate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;inputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;outputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;         &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;     &lt;span class=&quot;mf&quot;&gt;0.3&lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s recap what we’ve learned about the &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; so far:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;inputRange: [index - 1, index, index + 1]&lt;/code&gt;: with this single input range, we are able to express concisely both photo grid and photo detail scenes. If it’s rendering the photo grid scene, the range &lt;code class=&quot;highlighter-rouge&quot;&gt;[index, index + 1]&lt;/code&gt; is effective; if it’s rendering the photo detail scene, the range &lt;code class=&quot;highlighter-rouge&quot;&gt;[index - 1, index]&lt;/code&gt; is effective.&lt;/li&gt;
@@ -163,7 +172,7 @@
 &lt;p&gt;Once we’ve learned about the above, it’s almost trivial to create the transitions I listed at the beginning of this post. I’ll just list the interpolation code below for your viewing pleasure. You can also check out the complete code on github (&lt;a href=&quot;https://github.com/lintonye/react-native-diary/blob/master/transitions/app/CrossFadeTransitioner.js&quot;&gt;this&lt;/a&gt; and &lt;a href=&quot;https://github.com/lintonye/react-native-diary/blob/master/transitions/app/AndroidDefaultTransitioner.js&quot;&gt;this&lt;/a&gt;).&lt;/p&gt;
 
 &lt;!-- crossFade --&gt;
-&lt;div style=&quot;display: flex; flex-direction: row&quot;&gt;
+&lt;div style=&quot;display: flex; flex-direction: row; align-items: center;&quot;&gt;
   &lt;div class=&quot;fivecol&quot; style=&quot;float:none; margin-right:20px; &quot;&gt;
   &lt;iframe width=&quot;225&quot; height=&quot;400&quot; src=&quot;//www.youtube.com/embed/6_BGrOQQlko?controls=0&amp;amp;rel=0&amp;amp;showinfo=0;&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
   &lt;/div&gt;
@@ -178,7 +187,7 @@
 &lt;/div&gt;
 
 &lt;!-- androidDefault --&gt;
-&lt;div style=&quot;display: flex; flex-direction: row&quot;&gt;
+&lt;div style=&quot;display: flex; flex-direction: row; align-items: center;&quot;&gt;
   &lt;div class=&quot;fivecol&quot; style=&quot;float:none; margin-bottom:20px; margin-right:20px;&quot;&gt;
   &lt;iframe width=&quot;225&quot; height=&quot;400&quot; src=&quot;//www.youtube.com/embed/oVwq1QDcnOw?controls=0&amp;amp;rel=0&amp;amp;showinfo=0;&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
   &lt;/div&gt;
@@ -201,6 +210,8 @@
 &lt;p&gt;Now that we’ve learned about how to concisely declare input and output ranges for all scenes and the “&lt;code class=&quot;highlighter-rouge&quot;&gt;0.99&lt;/code&gt;” trick to create cliffs in the output range. We also created a couple of custom transitions without even breaking a sweat.&lt;/p&gt;
 
 &lt;p&gt;In the next post, we’ll start working on something a bit more challenging, the &lt;a href=&quot;https://www.youtube.com/embed/efPFJkxa-BQ&quot;&gt;shared element transition&lt;/a&gt;! Feel free to ask me questions in the comments below, or suggest topics that you’d like me to write about in future posts. Have a great day!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Special thanks to &lt;a href=&quot;https://www.facebook.com/eric.v.vicenti&quot;&gt;Eric Vlad Vicenti&lt;/a&gt; who reviewed this post and provided invaluable feedback!&lt;/em&gt;&lt;/p&gt;
 </content>
  </entry>
  
