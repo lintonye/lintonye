@@ -90,7 +90,18 @@
     </header>
 
     <section>
-      <p>In the <a href="/2016/12/20/navigation-experimental-custom-transition-1.html">previous post</a>, we covered how the transition animations in <code class="highlighter-rouge">NavigationCardStack</code> work: the <code class="highlighter-rouge">NavigationTransitioner</code> creates two <code class="highlighter-rouge">AnimatedValue</code>s, <code class="highlighter-rouge">position</code> and <code class="highlighter-rouge">progress</code>, which are then passed to <code class="highlighter-rouge">CardStack</code> and “interpolated” into style properties such as <code class="highlighter-rouge">scaleX</code>, <code class="highlighter-rouge">translateX</code> and <code class="highlighter-rouge">opacity</code>.</p>
+      <p><em>This is a series of posts about how to create custom transition “views” using the <code class="highlighter-rouge">Transitioner</code> in <a href="https://reactnavigation.org/">React Navigation</a> (based on “NavigationExperiemental”):</em></p>
+
+<ul>
+  <li><em><a href="/2016/12/20/navigation-experimental-custom-transition-1.html">An overview of Transitioner and CardStack</a></em></li>
+  <li><em>Simple transitions: cross fade and Android default (this post)</em></li>
+  <li><em><a href="/2017/01/23/react-navigation-shared-element-transition-1.html">Shared element transition 1/2</a></em></li>
+  <li><em>Shared element transition 2/2 (coming soon)</em></li>
+</ul>
+
+<hr />
+
+<p>In the <a href="/2016/12/20/navigation-experimental-custom-transition-1.html">previous post</a>, we covered how the transition animations in <code class="highlighter-rouge">NavigationCardStack</code> work: the <code class="highlighter-rouge">NavigationTransitioner</code> creates two <code class="highlighter-rouge">AnimatedValue</code>s, <code class="highlighter-rouge">position</code> and <code class="highlighter-rouge">progress</code>, which are then passed to <code class="highlighter-rouge">CardStack</code> and “interpolated” into style properties such as <code class="highlighter-rouge">scaleX</code>, <code class="highlighter-rouge">translateX</code> and <code class="highlighter-rouge">opacity</code>.</p>
 
 <p>In this post, we’ll take a closer look at how the <code class="highlighter-rouge">inputRange</code> and <code class="highlighter-rouge">outputRange</code> are set up in <code class="highlighter-rouge">CardStack</code> when interpolating the <code class="highlighter-rouge">AnimatedValue</code>s. We’ll also apply what we learn to create a couple of simple transitions:</p>
 
@@ -216,7 +227,9 @@
 
 <p>I know. What is that “<code class="highlighter-rouge">index + 0.99</code>” doing there? Let me explain.</p>
 
-<h1 id="the-trick-of-the-099-cliff">The trick of the “<code class="highlighter-rouge">0.99</code>-cliff”</h1>
+<p><a name="0.99-cliff"></a></p>
+
+<h1 id="the-099-cliff-trick">The “<code class="highlighter-rouge">0.99</code>-cliff” trick</h1>
 
 <p><img src="/images/navigation-custom-transition/099-trick.png" alt="opacity code" /></p>
 
@@ -322,6 +335,13 @@
           <span class="muted">Freelance full-stack developer in BC Canada (GMT-8). Android, React Native, Node.js, MongoDB, PostgreSQL. <a href="mailto:linton@jimulabs.com">Hire me.</a></span>
         </p>
       </address>
+      
+      
+      <section class="post_summary">
+        <h3 class="title">Next up: <a href="/2017/01/23/react-navigation-shared-element-transition-1.html" rel="prefetch">React Navigation: Shared Element Transition 1/2</a></h3>
+        <p>Blog series: creating custom transitions using Transitioner in React Nativigation. This post covers an overview of shared element transition.</p>
+        <hr>
+      </section>
        
       
       
@@ -352,7 +372,7 @@
 
   <footer class="site-footer">
     <div class="container">
-      &copy; 2016 Linton Ye
+      &copy; 2017 Linton Ye
 
       <nav>
         <a href="/">Blog</a> &middot;

@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2016-12-22T17:21:30-08:00</updated>
+ <updated>2017-01-23T23:58:10-08:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -13,12 +13,174 @@
 
  
  <entry>
+   <title>React Navigation: Shared Element Transition 1/2</title>
+   <link href="http://lintonye.github.io/2017/01/23/react-navigation-shared-element-transition-1.html"/>
+   <published>2017-01-23T00:00:00-08:00</published>
+   <updated>2017-01-18</updated>
+   <id>http://lintonye.github.io/2017/01/23/react-navigation-shared-element-transition-1</id>
+   <content type="html">&lt;p&gt;&lt;em&gt;This is a series of posts about how to create custom transition “views” using the &lt;code class=&quot;highlighter-rouge&quot;&gt;Transitioner&lt;/code&gt; in &lt;a href=&quot;https://reactnavigation.org/&quot;&gt;React Navigation&lt;/a&gt; (based on “NavigationExperiemental”):&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;&lt;a href=&quot;/2016/12/20/navigation-experimental-custom-transition-1.html&quot;&gt;An overview of Transitioner and CardStack&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;&lt;a href=&quot;/2016/12/22/navigation-experimental-custom-transition-2.html&quot;&gt;Simple transitions: cross fade and Android default&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Shared element transition 1/2 (this post)&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Shared element transition 2/2 (coming soon)&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;In the last couple of posts, we’ve learned about how Transitioner/CardStack works and how to create simple transitions by interpolating &lt;code class=&quot;highlighter-rouge&quot;&gt;AnimatedValue&lt;/code&gt;s that the Transitioner creates. Now, let’s try something fancier - shared element transition:&lt;/p&gt;
+
+&lt;video controls=&quot;&quot; autoplay=&quot;&quot;&gt;
+  &lt;source src=&quot;/images/navigation-custom-transition/shared-elements-trimmed-480p.mov&quot; type=&quot;video/mp4&quot; /&gt;
+  &lt;!-- &lt;source src=&quot;movie.ogg&quot; type=&quot;video/ogg&quot;&gt; --&gt;
+  Your browser does not support the video tag.
+&lt;/video&gt;
+
+&lt;p&gt;This neat transition was inspired by the &lt;a href=&quot;https://material.io/guidelines/patterns/navigational-transitions.html#navigational-transitions-parent-to-child&quot;&gt;example in the Material design guideline&lt;/a&gt;. We’ll look at an initial implementation which, of course, leaves plenty of room for improvements. And there might be much better approaches. But I think the main points learned via this excise should be useful elsewhere. If you prefer, feel free to dive into &lt;a href=&quot;https://github.com/lintonye/react-native-diary/blob/master/transitions/app/MaterialSharedElementTransitioner.js&quot;&gt;the source code&lt;/a&gt;, play with it and come back as needed.&lt;/p&gt;
+
+&lt;h2 id=&quot;goals&quot;&gt;Goals&lt;/h2&gt;
+&lt;p&gt;Taking on it as a personal challenge, I set the following goals before coding:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Pure JavaScript&lt;/strong&gt;: Because &lt;a href=&quot;https://blog.getexponent.com/good-practices-why-you-should-use-javascript-whenever-possible-with-react-native-26478ec22334#.1f5rqwn1c&quot;&gt;Pure JS is good&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Minimal API&lt;/strong&gt;: We’re gonna need a way to tell which views are shared and how they are linked. I wanted to minimize user’s effort for doing so.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Reasonably smooth on older devices&lt;/strong&gt;: Of course 60 FPS is the ultimate goal we should all aim at. But realistically it’s hard to achieve on older devices with pure JavaScript. The default CardStack animation sports about 40 FPS on my Nexus 5, which looks reasonably smooth and usable. Let’s use this as a yardstick and see how much further we can improve the performance.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;dissecting-the-animation&quot;&gt;Dissecting the animation&lt;/h2&gt;
+
+&lt;p&gt;OK, it’s now time to look closely at the animation that we want to create. There are a number of things happening during the 300ms transition window:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The entire photo grid scene first darkens gradually.&lt;/li&gt;
+  &lt;li&gt;The photo thumbnail in the grid is lifted up slightly (by casing a shadow).&lt;/li&gt;
+  &lt;li&gt;The thumbnail then moves, zooms and eventually becomes the bigger photo in the detail scene.&lt;/li&gt;
+  &lt;li&gt;Along with the photo, its container moves and grows until it fills up the screen.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/navigation-custom-transition/shared-element-animation-dissect.png&quot; alt=&quot;Animation dissect&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The most interesting part is the No.3 above which creates an effect that the photo jumps out of the grid and expands itself into the detail scene. We’ll devote most of this post to how it works.&lt;/p&gt;
+
+&lt;h2 id=&quot;smoke-and-mirrors&quot;&gt;Smoke and mirrors&lt;/h2&gt;
+
+&lt;p&gt;Do you really believe that there is a single image being shared between the grid and detail screens?&lt;/p&gt;
+
+&lt;p&gt;Let’s reveal the magic trick! The truth: nothing is shared and there is still a separate image on each scene. Most of the animation happens on an extra overlay visible only during the transition. BTW: It’s in fact very difficult, &lt;a href=&quot;https://github.com/brentvatne/hard-react-native-problems/issues/11&quot;&gt;if not impossible&lt;/a&gt;, to share a view across different parts in a component hierarchy in React.&lt;/p&gt;
+
+&lt;p&gt;It goes like this:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;When the transition is about to start:&lt;/strong&gt; We show the overlay and clone the shared views onto the overlay. The detail scene is rendered but invisible, allowing us to calculate the bounding boxes of the shared views on both of the grid and the detail scenes.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;During the transition:&lt;/strong&gt; Using the aforementioned bounding boxes, we animate the cloned views on the overlay.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Right after the transition:&lt;/strong&gt; We hide the overlay and show the actual detail scene.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Sounds straightforward to implement, right? I thought so in the beginning, however, I had to go through a few iterations to do it properly in the React way, and the asynchronous nature of React Native presents some unique challenges.&lt;/p&gt;
+
+&lt;p&gt;Let’s just start coding and see how far we could go.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-render-methods&quot;&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;render*&lt;/code&gt; methods&lt;/h2&gt;
+&lt;p&gt;Still remember how to use Transitioner? Our &lt;code class=&quot;highlighter-rouge&quot;&gt;SharedElementsTransitioner&lt;/code&gt; just renders to a &lt;code class=&quot;highlighter-rouge&quot;&gt;Transitioner&lt;/code&gt; and defines its &lt;code class=&quot;highlighter-rouge&quot;&gt;_render&lt;/code&gt; function like so:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;kr&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SharedElementsTransitioner&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Component&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Transitioner&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;render=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bind&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;_render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(....)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scenes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scenes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_renderScene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}));&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;overlay&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_renderOverlay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;prevProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scenes&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scenes&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;overlay&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;_render&lt;/code&gt; function is almost the same as that of &lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; except for the additional overlay where most of the animations take place.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;_renderOverlay&lt;/code&gt; function should be straightforward too. We just render all the shared views there:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// class SharedElementsTransitioner&lt;/span&gt;
+ &lt;span class=&quot;nx&quot;&gt;_renderOverlay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(....)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sharedViews&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cloneAndAnimateSharedViews&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(....);&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;overlayStyle&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+       &lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sharedViews&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;     
+   &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;We’ll leave the discussion about this &lt;code class=&quot;highlighter-rouge&quot;&gt;cloneAndAnimateSharedViews&lt;/code&gt; method to the next post (as it’s a long discussion).&lt;/p&gt;
+
+&lt;h2 id=&quot;creating-animated-styles-for-scenes-and-overlay&quot;&gt;Creating animated styles for scenes and overlay&lt;/h2&gt;
+
+&lt;p&gt;In order to ensure the overlay to be visible only during transition, we can use the “0.99-cliff” trick discussed in &lt;a href=&quot;/2016/12/22/navigation-experimental-custom-transition-2.html#0.99-cliff&quot;&gt;the previous post&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// in _renderOverlay()    //_&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;left&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;transitionProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interpolate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;inputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.99&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;outputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;    &lt;span class=&quot;mi&quot;&gt;100000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// move it off screen after transition is done&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;overlayStyle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;left&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Here we chose to animate &lt;code class=&quot;highlighter-rouge&quot;&gt;left&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;opacity&lt;/code&gt; to prevent the overlay from blocking touch events.&lt;/p&gt;
+
+&lt;p&gt;Similarly, we apply the “0.99-cliff” treatment to scene opacity in &lt;code class=&quot;highlighter-rouge&quot;&gt;_renderScene&lt;/code&gt; to make sure that the detail scene is initially invisible and only becomes fully opaque when the transition is about to finish. Contrary to the detail scene, the grid scene remains visible during the transition and only becomes invisible right after.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-jsx&quot; data-lang=&quot;jsx&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// class SharedElementsTransitioner&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;_renderScene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;progress&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;opacity&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;interpolate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;inputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.01&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.99&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;outputRange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;       &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;          &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;     &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;          &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;opacity&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+      ....
+    &lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;OK, let’s take a break for now. We have discussed a high-level plan on how the shared element transition might work: the overlay is the key to create the shared element effect. We also covered some simpler aspects in its implementation: the &lt;code class=&quot;highlighter-rouge&quot;&gt;render*&lt;/code&gt; methods, and how to show/hide scenes and the overlay at the right times.&lt;/p&gt;
+
+&lt;p&gt;In the next post, we’ll look into how to actually animate the shared views on the overlay. Bear with me, the fun is still ahead!&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>NavigationExperimental: Custom Transitions (2)</title>
    <link href="http://lintonye.github.io/2016/12/22/navigation-experimental-custom-transition-2.html"/>
    <published>2016-12-22T00:00:00-08:00</published>
    <updated>2016-12-22</updated>
    <id>http://lintonye.github.io/2016/12/22/navigation-experimental-custom-transition-2</id>
-   <content type="html">&lt;p&gt;In the &lt;a href=&quot;/2016/12/20/navigation-experimental-custom-transition-1.html&quot;&gt;previous post&lt;/a&gt;, we covered how the transition animations in &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; work: the &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; creates two &lt;code class=&quot;highlighter-rouge&quot;&gt;AnimatedValue&lt;/code&gt;s, &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt;, which are then passed to &lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; and “interpolated” into style properties such as &lt;code class=&quot;highlighter-rouge&quot;&gt;scaleX&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;translateX&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;opacity&lt;/code&gt;.&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;em&gt;This is a series of posts about how to create custom transition “views” using the &lt;code class=&quot;highlighter-rouge&quot;&gt;Transitioner&lt;/code&gt; in &lt;a href=&quot;https://reactnavigation.org/&quot;&gt;React Navigation&lt;/a&gt; (based on “NavigationExperiemental”):&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;&lt;a href=&quot;/2016/12/20/navigation-experimental-custom-transition-1.html&quot;&gt;An overview of Transitioner and CardStack&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Simple transitions: cross fade and Android default (this post)&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;&lt;a href=&quot;/2017/01/23/react-navigation-shared-element-transition-1.html&quot;&gt;Shared element transition 1/2&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Shared element transition 2/2 (coming soon)&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;In the &lt;a href=&quot;/2016/12/20/navigation-experimental-custom-transition-1.html&quot;&gt;previous post&lt;/a&gt;, we covered how the transition animations in &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; work: the &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; creates two &lt;code class=&quot;highlighter-rouge&quot;&gt;AnimatedValue&lt;/code&gt;s, &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt;, which are then passed to &lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; and “interpolated” into style properties such as &lt;code class=&quot;highlighter-rouge&quot;&gt;scaleX&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;translateX&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;opacity&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;In this post, we’ll take a closer look at how the &lt;code class=&quot;highlighter-rouge&quot;&gt;inputRange&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;outputRange&lt;/code&gt; are set up in &lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; when interpolating the &lt;code class=&quot;highlighter-rouge&quot;&gt;AnimatedValue&lt;/code&gt;s. We’ll also apply what we learn to create a couple of simple transitions:&lt;/p&gt;
 
@@ -144,7 +306,9 @@
 
 &lt;p&gt;I know. What is that “&lt;code class=&quot;highlighter-rouge&quot;&gt;index + 0.99&lt;/code&gt;” doing there? Let me explain.&lt;/p&gt;
 
-&lt;h1 id=&quot;the-trick-of-the-099-cliff&quot;&gt;The trick of the “&lt;code class=&quot;highlighter-rouge&quot;&gt;0.99&lt;/code&gt;-cliff”&lt;/h1&gt;
+&lt;p&gt;&lt;a name=&quot;0.99-cliff&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;the-099-cliff-trick&quot;&gt;The “&lt;code class=&quot;highlighter-rouge&quot;&gt;0.99&lt;/code&gt;-cliff” trick&lt;/h1&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/navigation-custom-transition/099-trick.png&quot; alt=&quot;opacity code&quot; /&gt;&lt;/p&gt;
 
@@ -220,7 +384,18 @@
    <published>2016-12-20T00:00:00-08:00</published>
    <updated>2016-12-20</updated>
    <id>http://lintonye.github.io/2016/12/20/navigation-experimental-custom-transition-1</id>
-   <content type="html">&lt;p&gt;&lt;a href=&quot;https://facebook.github.io/react-native/docs/navigation.html#navigationexperimental&quot;&gt;NavigationExperimental&lt;/a&gt; provides great support for custom transition animations. Do you want to create transitions like the following? This series of posts is for you!&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;em&gt;This is a series of posts about how to create custom transition “views” using the &lt;code class=&quot;highlighter-rouge&quot;&gt;Transitioner&lt;/code&gt; in &lt;a href=&quot;https://reactnavigation.org/&quot;&gt;React Navigation&lt;/a&gt; (based on “NavigationExperiemental”):&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;An overview of Transitioner and CardStack (this post)&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;&lt;a href=&quot;/2016/12/22/navigation-experimental-custom-transition-2.html&quot;&gt;Simple transitions: cross fade and Android default&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;&lt;a href=&quot;/2017/01/23/react-navigation-shared-element-transition-1.html&quot;&gt;Shared element transition 1/2&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Shared element transition 2/2 (coming soon)&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://facebook.github.io/react-native/docs/navigation.html#navigationexperimental&quot;&gt;NavigationExperimental&lt;/a&gt; provides great support for custom transition animations. Do you want to create transitions like the following? This series of posts is for you!&lt;/p&gt;
 
 &lt;div style=&quot;display:flex; flex-direction:row;&quot;&gt;
   &lt;!-- crossFade --&gt;
