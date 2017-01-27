@@ -2,7 +2,7 @@
 layout: post
 last-modified: '2017-01-18'
 
-title: "React Navigation: Shared Element Transition 1/2"
+title: "React Navigation: Shared element transition 1/3 (overview)"
 #subtitle: "A series of posts about creating custom transitions using NavigationExperimental."
 #cover_image: "navigation-custom-transition/transit.jpg"
 
@@ -18,8 +18,9 @@ author:
 
 - *[An overview of Transitioner and CardStack](/2016/12/20/navigation-experimental-custom-transition-1.html)*
 - *[Simple transitions: cross fade and Android default](/2016/12/22/navigation-experimental-custom-transition-2.html)*
-- *Shared element transition 1/2 (this post)*
-- *Shared element transition 2/2 (coming soon)*
+- *Shared element transition 1/3: overview (this post)*
+- *[Shared element transition 2/3: bounding boxes](/2017/01/25/react-navigation-shared-element-transition-2.html)*
+- *Shared element transition 3/3: the animation (coming soon)*
 
 ---
 
@@ -154,4 +155,4 @@ _renderScene(props) {
 ## Conclusion
 OK, let's take a break for now. We have discussed a high-level plan on how the shared element transition might work: the overlay is the key to create the shared element effect. We also covered some simpler aspects in its implementation: the `render*` methods, and how to show/hide scenes and the overlay at the right times.
 
-In the next post, we'll look into how to actually animate the shared views on the overlay. Bear with me, the fun is still ahead!
+In the [next post](/2017/01/25/react-navigation-shared-element-transition-2.html), we'll look into how to actually animate the shared views on the overlay. Bear with me, the fun is still ahead!

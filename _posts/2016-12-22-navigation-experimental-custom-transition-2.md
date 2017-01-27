@@ -19,8 +19,9 @@ author:
 
 - *[An overview of Transitioner and CardStack](/2016/12/20/navigation-experimental-custom-transition-1.html)*
 - *Simple transitions: cross fade and Android default (this post)*
-- *[Shared element transition 1/2](/2017/01/23/react-navigation-shared-element-transition-1.html)*
-- *Shared element transition 2/2 (coming soon)*
+- *[Shared element transition 1/3: overview](/2017/01/23/react-navigation-shared-element-transition-1.html)*
+- *[Shared element transition 2/3: bounding boxes](/2017/01/25/react-navigation-shared-element-transition-2.html)*
+- *Shared element transition 3/3: the animation (coming soon)*
 
 ---
 
