@@ -11,7 +11,7 @@ excerpt: "Blog series: creating custom transitions using NavigationExperimental.
 author:
   name: Linton Ye
   twitter: lintonye
-  bio: Freelance full-stack developer in BC Canada (GMT-8). Android, React Native, Node.js, MongoDB, PostgreSQL. <a href="mailto:linton@jimulabs.com">Hire me.</a>
+  bio: Freelance full-stack developer in BC Canada (GMT-8). Android, React Native, Node.js, MongoDB, PostgreSQL. <a href="mailto:linton@jimulabs.com">Contact me.</a>
   image: linton.jpg
 ---
 
