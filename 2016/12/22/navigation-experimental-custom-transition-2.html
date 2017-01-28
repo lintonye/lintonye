@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NavigationExperimental: Custom Transitions (2) &mdash; Linton's React Native Diary</title>
+  <title>React Navigation: Cross Fade and Android Default Transitions &mdash; Linton's React Native Diary</title>
   <!--[if lt IE 9]><script src='https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js'></script><![endif]-->
   
   <link rel="stylesheet" href="/assets/app.css">
@@ -46,16 +46,16 @@
 
   <link rel="shortcut icon" href="/favicon.ico?v2" type="image/x-icon" />
   <link rel="alternate" type="application/atom+xml" title="Linton's React Native Diary" href="/atom.xml" />
-  <meta name="title" content="NavigationExperimental: Custom Transitions (2) ">
+  <meta name="title" content="React Navigation: Cross Fade and Android Default Transitions ">
   <link rel="canonical" href="http://lintonye.github.io/2016/12/22/navigation-experimental-custom-transition-2.html">
   
   
-  <meta property="og:title" content="NavigationExperimental: Custom Transitions (2)"/>
+  <meta property="og:title" content="React Navigation: Cross Fade and Android Default Transitions"/>
   <meta property="og:url" content="http://lintonye.github.io/2016/12/22/navigation-experimental-custom-transition-2.html"/>
   
   
-  <meta property="og:description" content="Blog series: creating custom transitions using NavigationExperimental. This post covers inputRange and a couple of simple custom transitions."/>
-  <meta name="description" content="Blog series: creating custom transitions using NavigationExperimental. This post covers inputRange and a couple of simple custom transitions."/>
+  <meta property="og:description" content="Blog series: creating custom transitions using React Navigation. This post covers inputRange and a couple of simple custom transitions."/>
+  <meta name="description" content="Blog series: creating custom transitions using React Navigation. This post covers inputRange and a couple of simple custom transitions."/>
   
   <meta property="og:site_name" content="Linton's React Native Diary">
 </head>
@@ -82,10 +82,10 @@
         By <address><a rel="author" href="" title="Linton Ye" target="_blank">Linton Ye</a></address> &mdash;
         <time pubdate datetime="2016-22-December" title="Dec 22, 2016">Dec 22, 2016</time> &mdash;
         
-13 min read
+14 min read
 
       </div>
-      <h1 class="title">NavigationExperimental: Custom Transitions (2)</h1>
+      <h1 class="title">React Navigation: Cross Fade and Android Default Transitions</h1>
       
     </header>
 
@@ -101,6 +101,8 @@
 </ul>
 
 <hr />
+
+<p><em>Note: This post was written before the release of react-navigation. However, since react-navigation uses core classes in NavigationExperimental, the ideas discussed here are still relevant and useful. I’ll update the post from time to time to keep it up-to-date.</em></p>
 
 <p>In the <a href="/2016/12/20/navigation-experimental-custom-transition-1.html">previous post</a>, we covered how the transition animations in <code class="highlighter-rouge">NavigationCardStack</code> work: the <code class="highlighter-rouge">NavigationTransitioner</code> creates two <code class="highlighter-rouge">AnimatedValue</code>s, <code class="highlighter-rouge">position</code> and <code class="highlighter-rouge">progress</code>, which are then passed to <code class="highlighter-rouge">CardStack</code> and “interpolated” into style properties such as <code class="highlighter-rouge">scaleX</code>, <code class="highlighter-rouge">translateX</code> and <code class="highlighter-rouge">opacity</code>.</p>
 
@@ -302,7 +304,7 @@
 <div class="social">
   
   <div class='twitter'>
-    <a href="https://twitter.com/share" class="twitter-share-button"  data-text="NavigationExperimental: Custom Transitions (2)" data-related="lintonye">Tweet</a>
+    <a href="https://twitter.com/share" class="twitter-share-button"  data-text="React Navigation: Cross Fade and Android Default Transitions" data-related="lintonye">Tweet</a>
   </div>
   
 
@@ -322,7 +324,7 @@
 
   
   <div class='reddit'>
-    <a href="//www.reddit.com/submit" onclick="window.open('//www.reddit.com/submit?url=http://lintonye.github.io/2016/12/22/navigation-experimental-custom-transition-2.html&title=NavigationExperimental%3A+Custom+Transitions+%282%29'); return false"> <img src="//www.redditstatic.com/spreddit7.gif" alt="submit to reddit" border="0" /> </a>
+    <a href="//www.reddit.com/submit" onclick="window.open('//www.reddit.com/submit?url=http://lintonye.github.io/2016/12/22/navigation-experimental-custom-transition-2.html&title=React+Navigation%3A+Cross+Fade+and+Android+Default+Transitions'); return false"> <img src="//www.redditstatic.com/spreddit7.gif" alt="submit to reddit" border="0" /> </a>
   </div>
   
 </div>
@@ -347,8 +349,8 @@
       
       
       <section class="post_summary">
-        <h3 class="title">Previous story: <a href="/2016/12/20/navigation-experimental-custom-transition-1.html" rel="prefetch">NavigationExperimental: Custom Transitions (1)</a></h3>
-        <p>Blog series: creating custom transitions using NavigationExperimental. This post covers an overview of NavigationCardStack.</p>
+        <h3 class="title">Previous story: <a href="/2016/12/20/navigation-experimental-custom-transition-1.html" rel="prefetch">React Navigation: An Overview of Transitioner and CardStack</a></h3>
+        <p>Blog series: creating custom transitions using React Navigation. This post covers an overview of Transitioner and CardStack.</p>
         <hr>
       </section>
        

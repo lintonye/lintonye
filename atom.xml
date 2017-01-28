@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2017-01-27T15:06:25-08:00</updated>
+ <updated>2017-01-27T16:35:47-08:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -608,7 +608,7 @@
  </entry>
  
  <entry>
-   <title>NavigationExperimental: Custom Transitions (2)</title>
+   <title>React Navigation: Cross Fade and Android Default Transitions</title>
    <link href="http://lintonye.github.io/2016/12/22/navigation-experimental-custom-transition-2.html"/>
    <published>2016-12-22T00:00:00-08:00</published>
    <updated>2016-12-22</updated>
@@ -624,6 +624,8 @@
 &lt;/ul&gt;
 
 &lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;Note: This post was written before the release of react-navigation. However, since react-navigation uses core classes in NavigationExperimental, the ideas discussed here are still relevant and useful. I’ll update the post from time to time to keep it up-to-date.&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;In the &lt;a href=&quot;/2016/12/20/navigation-experimental-custom-transition-1.html&quot;&gt;previous post&lt;/a&gt;, we covered how the transition animations in &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; work: the &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; creates two &lt;code class=&quot;highlighter-rouge&quot;&gt;AnimatedValue&lt;/code&gt;s, &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt;, which are then passed to &lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; and “interpolated” into style properties such as &lt;code class=&quot;highlighter-rouge&quot;&gt;scaleX&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;translateX&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;opacity&lt;/code&gt;.&lt;/p&gt;
 
@@ -824,7 +826,7 @@
  </entry>
  
  <entry>
-   <title>NavigationExperimental: Custom Transitions (1)</title>
+   <title>React Navigation: An Overview of Transitioner and CardStack</title>
    <link href="http://lintonye.github.io/2016/12/20/navigation-experimental-custom-transition-1.html"/>
    <published>2016-12-20T00:00:00-08:00</published>
    <updated>2016-12-20</updated>
@@ -840,6 +842,7 @@
 &lt;/ul&gt;
 
 &lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Note: This post was written before the release of react-navigation. However, since react-navigation uses core classes in NavigationExperimental, the ideas discussed here are still relevant and useful. I’ll update the post from time to time to keep it up-to-date.&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://facebook.github.io/react-native/docs/navigation.html#navigationexperimental&quot;&gt;NavigationExperimental&lt;/a&gt; provides great support for custom transition animations. Do you want to create transitions like the following? This series of posts is for you!&lt;/p&gt;
 
