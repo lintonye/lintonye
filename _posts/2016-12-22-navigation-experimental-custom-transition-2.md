@@ -2,11 +2,11 @@
 layout: post
 last-modified: '2016-12-22'
 
-title: "NavigationExperimental: Custom Transitions (2)"
+title: "React Navigation: Cross Fade and Android Default Transitions"
 #subtitle: "A series of posts about creating custom transitions using NavigationExperimental."
 #cover_image: "navigation-custom-transition/transit.jpg"
 
-excerpt: "Blog series: creating custom transitions using NavigationExperimental. This post covers inputRange and a couple of simple custom transitions."
+excerpt: "Blog series: creating custom transitions using React Navigation. This post covers inputRange and a couple of simple custom transitions."
 
 author:
   name: Linton Ye
@@ -24,6 +24,8 @@ author:
 - *Shared element transition 3/3: the animation (coming soon)*
 
 ---
+
+*Note: This post was written before the release of react-navigation. However, since react-navigation uses core classes in NavigationExperimental, the ideas discussed here are still relevant and useful. I'll update the post from time to time to keep it up-to-date.*
 
 In the [previous post](/2016/12/20/navigation-experimental-custom-transition-1.html), we covered how the transition animations in `NavigationCardStack` work: the `NavigationTransitioner` creates two `AnimatedValue`s, `position` and `progress`, which are then passed to `CardStack` and "interpolated" into style properties such as `scaleX`, `translateX` and `opacity`.
 

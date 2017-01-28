@@ -2,10 +2,10 @@
 layout: post
 last-modified: '2016-12-20'
 
-title: "NavigationExperimental: Custom Transitions (1)"
+title: "React Navigation: An Overview of Transitioner and CardStack"
 #cover_image: "navigation-custom-transition/ski-lift.jpg"
 
-excerpt: "Blog series: creating custom transitions using NavigationExperimental. This post covers an overview of NavigationCardStack."
+excerpt: "Blog series: creating custom transitions using React Navigation. This post covers an overview of Transitioner and CardStack."
 
 author:
   name: Linton Ye
@@ -22,6 +22,7 @@ author:
 - *Shared element transition 3/3: the animation (coming soon)*
 
 ---
+*Note: This post was written before the release of react-navigation. However, since react-navigation uses core classes in NavigationExperimental, the ideas discussed here are still relevant and useful. I'll update the post from time to time to keep it up-to-date.*
 
 [NavigationExperimental](https://facebook.github.io/react-native/docs/navigation.html#navigationexperimental) provides great support for custom transition animations. Do you want to create transitions like the following? This series of posts is for you!
 
