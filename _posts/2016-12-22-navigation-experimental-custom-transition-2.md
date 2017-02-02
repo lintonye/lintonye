@@ -25,7 +25,14 @@ author:
 
 ---
 
-*Note: This post was written before the release of react-navigation. However, since react-navigation uses core classes in NavigationExperimental, the ideas discussed here are still relevant and useful. I'll update the post from time to time to keep it up-to-date.*
+<div class="update-notes" style="background: #e8e8e8; padding: 10px; font-size: 0.8em; border-radius: 5px; margin-bottom: 20px;">
+<p><strong>Update notes (2017-02-01):</strong> This post was written before the release of React Navigation which will replace NavigationExperimental soon. However, this post is still worth reading since React Native uses core classes in NavigationExperimental. Some minor changes:</p>
+<ul>
+  <li><code class="highlighter-rouge">NavigationCardStack</code> and <code class="highlighter-rouge">NavigationTransitioner</code> are now simply <code class="highlighter-rouge">CardStack</code> and <code class="highlighter-rouge">Transitioner</code></li>
+  <li><code class="highlighter-rouge">CardStack</code> now uses bottom-up transition on Android by default, very similar to the androidDefault animation shown below. That’s a great move.</li>
+  <li><code class="highlighter-rouge">CardStack</code> now has a <a href="https://reactnavigation.org/docs/navigators/navigation-prop"><code class="highlighter-rouge">navigation</code> prop</a> which includes the <code class="highlighter-rouge">state</code> and navigation functions.</li>
+</ul>
+</div>
 
 In the [previous post](/2016/12/20/navigation-experimental-custom-transition-1.html), we covered how the transition animations in `NavigationCardStack` work: the `NavigationTransitioner` creates two `AnimatedValue`s, `position` and `progress`, which are then passed to `CardStack` and "interpolated" into style properties such as `scaleX`, `translateX` and `opacity`.
 
