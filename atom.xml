@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2017-01-27T16:35:47-08:00</updated>
+ <updated>2017-02-01T16:57:22-08:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -625,7 +625,14 @@
 
 &lt;hr /&gt;
 
-&lt;p&gt;&lt;em&gt;Note: This post was written before the release of react-navigation. However, since react-navigation uses core classes in NavigationExperimental, the ideas discussed here are still relevant and useful. I’ll update the post from time to time to keep it up-to-date.&lt;/em&gt;&lt;/p&gt;
+&lt;div class=&quot;update-notes&quot; style=&quot;background: #e8e8e8; padding: 10px; font-size: 0.8em; border-radius: 5px; margin-bottom: 20px;&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Update notes (2017-02-01):&lt;/strong&gt; This post was written before the release of React Navigation which will replace NavigationExperimental soon. However, this post is still worth reading since React Native uses core classes in NavigationExperimental. Some minor changes:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; are now simply &lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Transitioner&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; now uses bottom-up transition on Android by default, very similar to the androidDefault animation shown below. That’s a great move.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; now has a &lt;a href=&quot;https://reactnavigation.org/docs/navigators/navigation-prop&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;navigation&lt;/code&gt; prop&lt;/a&gt; which includes the &lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt; and navigation functions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 
 &lt;p&gt;In the &lt;a href=&quot;/2016/12/20/navigation-experimental-custom-transition-1.html&quot;&gt;previous post&lt;/a&gt;, we covered how the transition animations in &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; work: the &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; creates two &lt;code class=&quot;highlighter-rouge&quot;&gt;AnimatedValue&lt;/code&gt;s, &lt;code class=&quot;highlighter-rouge&quot;&gt;position&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;progress&lt;/code&gt;, which are then passed to &lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; and “interpolated” into style properties such as &lt;code class=&quot;highlighter-rouge&quot;&gt;scaleX&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;translateX&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;opacity&lt;/code&gt;.&lt;/p&gt;
 
@@ -842,7 +849,14 @@
 &lt;/ul&gt;
 
 &lt;hr /&gt;
-&lt;p&gt;&lt;em&gt;Note: This post was written before the release of react-navigation. However, since react-navigation uses core classes in NavigationExperimental, the ideas discussed here are still relevant and useful. I’ll update the post from time to time to keep it up-to-date.&lt;/em&gt;&lt;/p&gt;
+&lt;div class=&quot;update-notes&quot; style=&quot;background: #e8e8e8; padding: 10px; font-size: 0.8em; border-radius: 5px; margin-bottom: 20px;&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Update notes (2017-02-01):&lt;/strong&gt; This post was written before the release of React Navigation which will replace NavigationExperimental soon. However, this post is still worth reading since React Native uses core classes in NavigationExperimental. Some minor changes:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationCardStack&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;NavigationTransitioner&lt;/code&gt; are now simply &lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Transitioner&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; now uses bottom-up transition on Android by default, very similar to the androidDefault animation shown below. That’s a great move.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CardStack&lt;/code&gt; now has a &lt;a href=&quot;https://reactnavigation.org/docs/navigators/navigation-prop&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;navigation&lt;/code&gt; prop&lt;/a&gt; which includes the &lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt; and navigation functions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://facebook.github.io/react-native/docs/navigation.html#navigationexperimental&quot;&gt;NavigationExperimental&lt;/a&gt; provides great support for custom transition animations. Do you want to create transitions like the following? This series of posts is for you!&lt;/p&gt;
 
