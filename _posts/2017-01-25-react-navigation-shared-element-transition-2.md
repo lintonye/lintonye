@@ -191,12 +191,12 @@ Here's how a user can mark an element as shared in the component's `render` meth
 
 {% highlight jsx %}
 // on photo grid screen
-<SharedView name='photo1' containerRouteName='ROUTE_PHOTO_GRID'>
+<SharedView name='photo1' containerRouteName='PhotoGrid'>
   <Image source={image} />
 </SharedView>
 
 // on photo detail screen
-<SharedView name='photo1' containerRouteName='ROUTE_PHOTO_DETAIL'>
+<SharedView name='photo1' containerRouteName='PhotoDetail'>
   <Image source={image} />
 </SharedView>
 {% endhighlight %}
@@ -323,6 +323,21 @@ render() {
 }_
 {% endhighlight %}
 
+**Update (2017-02-03):** This only works on Android. On iOS, the `onLayout` function isn't called during transition. This is perhaps more accurate behavior since the layout of the root view does not change during transition. I had to use the `onLayout` on each scene instead:
+
+{% highlight jsx %}
+_renderScene(transitionProps) {
+  ....
+  return (
+    <Animated.View ....
+        onLayout={this._onLayout.bind(this)}>
+        <Scene navigation={navigation} />
+        ....
+    </Animated.View>
+  );
+}_
+{% endhighlight %}
+
 #### 2. It works asynchronously.
 
 The function `UIManager.measureInWindow` returns the result in a callback:
@@ -414,7 +429,7 @@ class SharedView extends Component {
 }
 {% endhighlight %}
 
-Not sure what happens on iOS though. I'll give it a try and update the post when I get a chance (I deleted XCode a while ago...).
+This `collapsable` doesn't seem to have any effect on iOS. We can just leave it as is.
 
 ### Improve rendering performance using `shouldComponentUpdate`
 
