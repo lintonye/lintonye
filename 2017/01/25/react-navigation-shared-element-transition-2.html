@@ -273,12 +273,12 @@
 <p>Here’s how a user can mark an element as shared in the component’s <code class="highlighter-rouge">render</code> method:</p>
 
 <div class="highlight"><pre><code class="language-jsx" data-lang="jsx"><span class="c1">// on photo grid screen</span>
-<span class="p">&lt;</span><span class="nc">SharedView</span> <span class="na">name=</span><span class="s1">'photo1'</span> <span class="na">containerRouteName=</span><span class="s1">'ROUTE_PHOTO_GRID'</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nc">SharedView</span> <span class="na">name=</span><span class="s1">'photo1'</span> <span class="na">containerRouteName=</span><span class="s1">'PhotoGrid'</span><span class="p">&gt;</span>
   <span class="p">&lt;</span><span class="nc">Image</span> <span class="na">source=</span><span class="si">{</span><span class="nx">image</span><span class="si">}</span> <span class="p">/&gt;</span>
 <span class="p">&lt;/</span><span class="nc">SharedView</span><span class="p">&gt;</span>
 
 <span class="c1">// on photo detail screen</span>
-<span class="p">&lt;</span><span class="nc">SharedView</span> <span class="na">name=</span><span class="s1">'photo1'</span> <span class="na">containerRouteName=</span><span class="s1">'ROUTE_PHOTO_DETAIL'</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nc">SharedView</span> <span class="na">name=</span><span class="s1">'photo1'</span> <span class="na">containerRouteName=</span><span class="s1">'PhotoDetail'</span><span class="p">&gt;</span>
   <span class="p">&lt;</span><span class="nc">Image</span> <span class="na">source=</span><span class="si">{</span><span class="nx">image</span><span class="si">}</span> <span class="p">/&gt;</span>
 <span class="p">&lt;/</span><span class="nc">SharedView</span><span class="p">&gt;</span></code></pre></div>
 
@@ -400,6 +400,19 @@
   <span class="p">}</span>
 <span class="p">}</span><span class="nx">_</span></code></pre></div>
 
+<p><strong>Update (2017-02-03):</strong> This only works on Android. On iOS, the <code class="highlighter-rouge">onLayout</code> function isn’t called during transition. This is perhaps more accurate behavior since the layout of the root view does not change during transition. I had to use the <code class="highlighter-rouge">onLayout</code> on each scene instead:</p>
+
+<div class="highlight"><pre><code class="language-jsx" data-lang="jsx"><span class="nx">_renderScene</span><span class="p">(</span><span class="nx">transitionProps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">....</span>
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="p">&lt;</span><span class="nc">Animated</span><span class="p">.</span><span class="nc">View</span> <span class="p">....</span>
+        <span class="na">onLayout=</span><span class="si">{</span><span class="k">this</span><span class="p">.</span><span class="nx">_onLayout</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="si">}</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nc">Scene</span> <span class="na">navigation=</span><span class="si">{</span><span class="nx">navigation</span><span class="si">}</span> <span class="p">/&gt;</span>
+        ....
+    <span class="p">&lt;/</span><span class="nc">Animated</span><span class="p">.</span><span class="nc">View</span><span class="p">&gt;</span>
+  <span class="p">);</span>
+<span class="p">}</span><span class="nx">_</span></code></pre></div>
+
 <h4 id="2-it-works-asynchronously">2. It works asynchronously.</h4>
 
 <p>The function <code class="highlighter-rouge">UIManager.measureInWindow</code> returns the result in a callback:</p>
@@ -483,7 +496,7 @@
   <span class="p">}</span>
 <span class="p">}</span></code></pre></div>
 
-<p>Not sure what happens on iOS though. I’ll give it a try and update the post when I get a chance (I deleted XCode a while ago…).</p>
+<p>This <code class="highlighter-rouge">collapsable</code> doesn’t seem to have any effect on iOS. We can just leave it as is.</p>
 
 <h3 id="improve-rendering-performance-using-shouldcomponentupdate">Improve rendering performance using <code class="highlighter-rouge">shouldComponentUpdate</code></h3>
 
