@@ -111,3 +111,33 @@ Initially I set this as a challenge to myself and wasn't sure if it's actually p
   - iOS
   - discussion: when loading image in detail scene is slow
   - what if we add a toolbar on the photo detail?
+
+  ====
+
+  If you check out the source of `Transitioner`, you'll see the animation starts when the `Transitioner` receives a new prop:
+
+  {% highlight jsx %}
+  class Transitioner extends React.Component {
+    ....
+    componentWillReceiveProps(nextProps: Props): void {
+      ....
+      this._startTransition(nextProps, nextScenes, indexHasChanged);
+    }
+  }_
+  {% endhighlight %}
+
+  It's worth noting that the `position` and `progress` animated values will continue to change as long as the transitioner instance remains the same and has not yet received a new prop.
+
+  The implication of this is that
+
+
+  - skipped frames at the beginning
+    - measuring is expensive
+  - minimize the number of updates - log in componentDidUpdate to debug
+
+  ## Conclusion
+  TODO
+  - what if a shared element is the parent of another shared element?
+  - closing discussions
+
+  <a name="endofpost">

@@ -21,7 +21,7 @@ author:
 - *[Simple transitions: cross fade and Android default](/2016/12/22/navigation-experimental-custom-transition-2.html)*
 - *[Shared element transition 1/3: overview](/2017/01/23/react-navigation-shared-element-transition-1.html)*
 - *Shared element transition 2/3: bounding boxes (this post)*
-- *Shared element transition 3/3: the animation (coming soon)*
+- *[Shared element transition 3/3: the animation](/2017/04/22/react-navigation-shared-element-transition-3.html)*
 
 ---
 
