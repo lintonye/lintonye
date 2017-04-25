@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2017-04-22T10:59:53-07:00</updated>
+ <updated>2017-04-24T17:14:16-07:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -35,7 +35,7 @@
 &lt;ol&gt;
   &lt;li&gt;This &lt;a href=&quot;https://github.com/react-community/react-navigation/pull/941&quot;&gt;pull request&lt;/a&gt; for shared element transition in React Navigation.&lt;/li&gt;
   &lt;li&gt;A &lt;a href=&quot;https://github.com/react-community/react-navigation/issues/175&quot;&gt;proposal and initial implementation&lt;/a&gt; of custom transitions in React Navigation.&lt;/li&gt;
-  &lt;li&gt;A Lynda course about React Native and Android (more on that in future posts).&lt;/li&gt;
+  &lt;li&gt;A couple of courses about React Native (more on that in future posts).&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;Alright, enough excuses. :) Let’s continue our adventure about shared element transition. In the &lt;a href=&quot;/2017/01/25/react-navigation-shared-element-transition-2.html&quot;&gt;last post&lt;/a&gt;, we’ve discussed the core challenges in implementing shared element transition. Once we get the bounding boxes of the shared elements on both from and to scenes, we’ll be ready to animate them. Let’s finally look at that in this post!&lt;/p&gt;
