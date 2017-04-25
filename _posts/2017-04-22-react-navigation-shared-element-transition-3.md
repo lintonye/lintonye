@@ -29,7 +29,7 @@ Time flies! I really appreciate your patience for this piece. In fact, I've been
 
 1. This [pull request](https://github.com/react-community/react-navigation/pull/941) for shared element transition in React Navigation.
 2. A [proposal and initial implementation](https://github.com/react-community/react-navigation/issues/175) of custom transitions in React Navigation.
-3. A Lynda course about React Native and Android (more on that in future posts).
+3. A couple of courses about React Native (more on that in future posts).
 
 Alright, enough excuses. :) Let's continue our adventure about shared element transition. In the [last post](/2017/01/25/react-navigation-shared-element-transition-2.html), we've discussed the core challenges in implementing shared element transition. Once we get the bounding boxes of the shared elements on both from and to scenes, we'll be ready to animate them. Let's finally look at that in this post!
 
