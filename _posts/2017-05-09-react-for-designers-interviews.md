@@ -1,6 +1,6 @@
 ---
 layout: post
-last-modified: '2017-05-04'
+last-modified: '2017-05-09'
 
 title: "React Course for Designers, Anyone?"
 subtitle: "A report of 10+ interviews with designers"
