@@ -105,7 +105,7 @@ Implications:
 > No matter they like it or not, designers are now aware that coding is one of the options for design.  
 
 # Why do you want to learn React?
-The most popular motivation is that they are working on a project that uses React (either ReactJS or React Native). They want to know how to work with developers better, and they want to have more direct influence on the project.
+The most popular motivation is that they are working on a project that uses React (either ReactJS[^1] or React Native). They want to know how to work with developers better, and they want to have more direct influence on the project.
 
 Interestingly, many people are not really aware of (or care about) the difference between React Native and ReactJS. I told them that the good news is React as a concept is the same. Once you learn one of the two, it's straightforward to pick up the other.
 
@@ -167,11 +167,16 @@ My special thanks to these fantastic folks (sorted by last name):
 - Antti Kareinen
 - Sure Lee
 - Rutuja Rasam
-- Ben Pepin
+- [Ben Pepin](http://www.benpepin.com/)
 - [Toby Silverman](http://design.tobysilverman.com/)
 - Jeffery Vaska
 - [Jerry Wang](https://medium.com/@jerrywang)
 - Arjun
 
+---
+
+Footnotes:
+
+[^1]: It seems Facebook has [never officially used](https://web.archive.org/web/20130529213355/https://facebook.github.io/react/) the name "ReactJS" or "React.js". It's just "React".
 
 <a name="endofpost">
