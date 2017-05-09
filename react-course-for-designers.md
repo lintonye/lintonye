@@ -11,9 +11,9 @@ author:
 <script async id="_ck_209062" src="https://forms.convertkit.com/209062?v=6"></script>
 
 ## Why React?
-Have you heard of Airbnb's new tool [React Sketch.app](http://airbnb.design/painting-with-code/)? Have you ever wondered how your developer implemented that nifty animation you created with After Effects (Hint: [Lottie](http://airbnb.design/lottie/)? Do you know what assets you should give the developer for that new app written in React Native? Have you ever hoped that you can tweak the styles in the [Storybook](https://github.com/storybooks/storybook) your developer created?
+Have you heard of Airbnb's new tool [React Sketch.app](http://airbnb.design/painting-with-code/)? Have you ever wondered how your developer implemented that nifty animation you created with After Effects (Hint: [Lottie](http://airbnb.design/lottie/))? Do you know what assets you should give the developer for that new app written in React Native? Have you ever hoped that you can tweak the styles in the [Storybook](https://github.com/storybooks/storybook) your developer created?
 
-React has a lot to offer. It spreads like a wild fire. It is super relevant to every UI designer. In fact I think it's too risky not to know anything about this React thing that your developer friends passionately talk about everyday.
+React has a lot to offer. It spreads like a wild fire. It is super relevant to every UI designer. In fact I think it's too risky to ignore this React thing that your developer friends passionately talk about every day.
 
 ## I'm a designer, why should I learn coding?
 I always believe that learning to code will help a designer become better at design. Armed with a better understanding of how things work, you will find the communication with developers much more efficient. Your design ideas would be more convincing and more respected. You can even [design with code](https://blog.framer.com/what-if-a-designer-learns-code-59d790024c9e).
