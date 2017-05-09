@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2017-05-09T06:23:34-07:00</updated>
+ <updated>2017-05-09T06:25:56-07:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -14,10 +14,10 @@
  
  <entry>
    <title>React Course for Designers, Anyone?</title>
-   <link href="http://lintonye.github.io/2017/05/10/react-for-designers-interviews.html"/>
-   <published>2017-05-10T00:00:00-07:00</published>
-   <updated>2017-05-04</updated>
-   <id>http://lintonye.github.io/2017/05/10/react-for-designers-interviews</id>
+   <link href="http://lintonye.github.io/2017/05/09/react-for-designers-interviews.html"/>
+   <published>2017-05-09T00:00:00-07:00</published>
+   <updated>2017-05-09</updated>
+   <id>http://lintonye.github.io/2017/05/09/react-for-designers-interviews</id>
    <content type="html">&lt;p&gt;Should designers code? This is an eternal question.&lt;/p&gt;
 
 &lt;p&gt;I believe designers and developers should both learn a bit about the profession of the other side. Armed with a holistic understanding of how design and engineering fit together to create great products, we will become better designers and better developers.&lt;/p&gt;
