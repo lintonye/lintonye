@@ -156,7 +156,7 @@ I am thrilled! I think many designers are motivated to learn coding. React is on
 Are you inspired to pick up some React as well? Sign up [here](https://app.convertkit.com/landing_pages/208836), and I'll send you an email when something is ready.
 
 # Acknowledgements
-I'd like to thank everyone who spent your precious time to chat with me, made a comment or upvoted my post. Your insights will really shape the course.
+I'd like to thank everyone who spent your precious time to chat with me, made a comment or upvoted my post. Your insights will really have a huge influence on the course. Together, let's create something truly useful for designers!
 
 My special thanks to these fantastic folks (sorted by last name):
 
