@@ -43,7 +43,7 @@ But again, I'm still exploring. Perhaps that'd be enough, perhaps not. Perhaps I
 I've got some initial ideas [here](https://trello.com/b/E7lYUXqZ/react-for-designers), but let me know what you think!
 
 ## Who will teach the course?
-Me for now. I'm a developer and I'm learning design as well. I've been working on mobile since 2007 and React Native since 2015. I create a [course](https://teamtreehouse.com/library/animations-and-transitions) on Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
+Me for now. I'm a developer and I'm learning design as well. I've been working on mobile since 2007 and React Native since 2015. I've created a [course](https://teamtreehouse.com/library/animations-and-transitions) on Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
 
 Thanks a lot for your interest!
 
