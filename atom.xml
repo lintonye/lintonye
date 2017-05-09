@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2017-05-09T10:45:14-07:00</updated>
+ <updated>2017-05-09T13:10:42-07:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -140,7 +140,7 @@
 &lt;/blockquote&gt;
 
 &lt;h1 id=&quot;why-do-you-want-to-learn-react&quot;&gt;Why do you want to learn React?&lt;/h1&gt;
-&lt;p&gt;The most popular motivation is that they are working on a project that uses React (either ReactJS or React Native). They want to know how to work with developers better, and they want to have more direct influence on the project.&lt;/p&gt;
+&lt;p&gt;The most popular motivation is that they are working on a project that uses React (either ReactJS&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; or React Native). They want to know how to work with developers better, and they want to have more direct influence on the project.&lt;/p&gt;
 
 &lt;p&gt;Interestingly, many people are not really aware of (or care about) the difference between React Native and ReactJS. I told them that the good news is React as a concept is the same. Once you learn one of the two, it’s straightforward to pick up the other.&lt;/p&gt;
 
@@ -232,14 +232,25 @@
   &lt;li&gt;Antti Kareinen&lt;/li&gt;
   &lt;li&gt;Sure Lee&lt;/li&gt;
   &lt;li&gt;Rutuja Rasam&lt;/li&gt;
-  &lt;li&gt;Ben Pepin&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benpepin.com/&quot;&gt;Ben Pepin&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://design.tobysilverman.com/&quot;&gt;Toby Silverman&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;Jeffery Vaska&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://medium.com/@jerrywang&quot;&gt;Jerry Wang&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;Arjun&lt;/li&gt;
 &lt;/ul&gt;
 
+&lt;hr /&gt;
+
+&lt;p&gt;Footnotes:&lt;/p&gt;
+
 &lt;p&gt;&lt;a name=&quot;endofpost&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;It seems Facebook has &lt;a href=&quot;https://web.archive.org/web/20130529213355/https://facebook.github.io/react/&quot;&gt;never officially used&lt;/a&gt; the name “ReactJS” or “React.js”. It’s just “React”. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;
 </content>
  </entry>
  
