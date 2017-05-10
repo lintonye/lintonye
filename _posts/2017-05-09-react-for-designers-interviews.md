@@ -161,7 +161,7 @@ I'd like to thank everyone who spent your precious time to chat with me, made a 
 My special thanks to these fantastic folks (sorted by last name):
 
 - J. Terrell Allen
-- Jovana Andjelkovic
+- [Jovana Andjelkovic](https://dribbble.com/casualmess)
 - [Olafur Breidfjord](http://olafurbreidfjord.com/)
 - [Jinju Jang](http://medium.com/@arle13)
 - Antti Kareinen
