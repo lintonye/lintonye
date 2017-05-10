@@ -8,6 +8,8 @@ author:
   image: linton-face.jpg
 ---
 
+<img src ="/images/designer-interviews/superman.jpg" style="width: 100%"/>
+
 <script async id="_ck_209062" src="https://forms.convertkit.com/209062?v=6"></script>
 
 ## Why React?
