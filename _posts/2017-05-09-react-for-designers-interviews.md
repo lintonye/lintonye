@@ -74,7 +74,7 @@ It's interesting to hear designers talking about their own pain points.
 
 > Designers are very aware that working with engineers is super important and there is a lot of motivation on the designer’s side to make that relationship (with developers) as good as possible. But motivation isn’t always enough if you don’t understand anything about the coding side. It’s very easy, especially as a junior designer, to propose things that are annoyingly completely out of scope, ridiculous and have no bearing on reality. Even if you are very motivated to work as well as possible with engineers, that can be frustrating because there’s so much that you don’t understand about what their job is like. So I think it is a problem and there’s a lot of energy behind solving it right now, which is great.
 
-> As a designer, when I create an animation, I’ll have to pass it over to a developer to implement it. But the developer might be busy with other things and probably don’t have a chance to implement it for a couple of months. The animation will just sit there. It may be pretty but until it is implemented in the app and distributed to people, my value isn’t quite there.
+> As a designer, when you create an animation, you'll have to pass it over to a developer to implement it. But the developer might be busy with other things and probably don’t have a chance to implement it for a couple of months. The animation will just sit there. It may be pretty but until it is implemented in the app and distributed to people, your value isn’t quite there.
 
 > Designers for the most part have no understanding of code but are interested in contributing their designs into the apps they’re working on though limited by the the dev resources.
 
