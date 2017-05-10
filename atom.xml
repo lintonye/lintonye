@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2017-05-09T13:10:42-07:00</updated>
+ <updated>2017-05-10T06:22:05-07:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -86,7 +86,7 @@
 &lt;/blockquote&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;As a designer, when I create an animation, I’ll have to pass it over to a developer to implement it. But the developer might be busy with other things and probably don’t have a chance to implement it for a couple of months. The animation will just sit there. It may be pretty but until it is implemented in the app and distributed to people, my value isn’t quite there.&lt;/p&gt;
+  &lt;p&gt;As a designer, when you create an animation, you’ll have to pass it over to a developer to implement it. But the developer might be busy with other things and probably don’t have a chance to implement it for a couple of months. The animation will just sit there. It may be pretty but until it is implemented in the app and distributed to people, your value isn’t quite there.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;blockquote&gt;
@@ -228,14 +228,15 @@
   &lt;li&gt;J. Terrell Allen&lt;/li&gt;
   &lt;li&gt;Jovana Andjelkovic&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://olafurbreidfjord.com/&quot;&gt;Olafur Breidfjord&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://blog.framer.com/@arle13&quot;&gt;Jinju Jang&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://medium.com/@arle13&quot;&gt;Jinju Jang&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;Antti Kareinen&lt;/li&gt;
   &lt;li&gt;Sure Lee&lt;/li&gt;
   &lt;li&gt;Rutuja Rasam&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://www.benpepin.com/&quot;&gt;Ben Pepin&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://design.tobysilverman.com/&quot;&gt;Toby Silverman&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Jeffery Vaska&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://vaska.com/&quot;&gt;Jeffery Vaska&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://medium.com/@jerrywang&quot;&gt;Jerry Wang&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://beebeeye.github.io/&quot;&gt;Beebee Ye&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;Arjun&lt;/li&gt;
 &lt;/ul&gt;
 
