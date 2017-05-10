@@ -163,14 +163,15 @@ My special thanks to these fantastic folks (sorted by last name):
 - J. Terrell Allen
 - Jovana Andjelkovic
 - [Olafur Breidfjord](http://olafurbreidfjord.com/)
-- [Jinju Jang](https://blog.framer.com/@arle13)
+- [Jinju Jang](http://medium.com/@arle13)
 - Antti Kareinen
 - Sure Lee
 - Rutuja Rasam
 - [Ben Pepin](http://www.benpepin.com/)
 - [Toby Silverman](http://design.tobysilverman.com/)
-- Jeffery Vaska
+- [Jeffery Vaska](http://vaska.com/)
 - [Jerry Wang](https://medium.com/@jerrywang)
+- [Beebee Ye](https://beebeeye.github.io/)
 - Arjun
 
 ---
