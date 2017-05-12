@@ -79,7 +79,7 @@ Thanks a lot for your interest!
 ## Acknowledgements
 My special thanks to these fantastic folks who have given me invaluable help, inspiration and encouragement (sorted by last name):
 
-- J. Terrell Allen
+- [J. Terrell Allen](https://dribbble.com/JTerrellAllen)
 - [Jovana Andjelkovic](https://dribbble.com/casualmess)
 - [Olafur Breidfjord](http://olafurbreidfjord.com/)
 - [Jinju Jang](http://medium.com/@arle13)
