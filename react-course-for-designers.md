@@ -33,7 +33,7 @@ author:
 ---
 
 ## What will be in the course?
-The general goal of this course is to give you a firm understanding of the fundamentals, capability and limitations of React and **how they relate to design**. I think the most effective way to achieve this goal is to actually build something with React -- with hands-on experience in implementing modern, realistic user interfaces, you'll be able to understand developers' jargon a lot more deeply, compared to, for example, reading about those terms in an article, or over a lunch-and-learn session.
+The main goal of this course is to give you a firm understanding of the fundamentals, capability and limitations of React and **how they relate to design**. I think the most effective way to achieve this goal is to actually build something with React -- with hands-on experience in implementing modern, realistic user interfaces, you'll be able to understand developers' jargon a lot more deeply, compared to, for example, learning about the terms in an article, or over a lunch-and-learn session.
 
 Some tentative topics include:
 
@@ -51,32 +51,28 @@ Some tentative topics include:
 For more information, check out [this Trello board](https://trello.com/b/E7lYUXqZ/react-for-designers) where you can vote on ideas. I'd really appreciate your feedback!
 
 ## But I'm a designer, why should I learn coding?
-I encourage you to check out this [post](/2017/05/09/react-for-designers-interviews.html) to hear other designers' opinions about the same question.
+I encourage you to check out this [post](/2017/05/09/react-for-designers-interviews.html) to hear other designers' opinions.
 
 Learning to code will help you become better at design. Armed with a better understanding of how things work, you will find the communication with developers much more efficient. Your design ideas would be more convincing and more respected. You can even [design with code](https://blog.framer.com/what-if-a-designer-learns-code-59d790024c9e).
 
 New skills you learn will open new doors. Trust me, it will be a new world of creativity!
 
 
+## So where can I download / sign up for the course?
+It's still at a very early stage. I plan to gradually develop the course content over a few months. So you are practically witnessing the birth of a brand new course! It's a good opportunity to have your influence on creating a great resource for the entire design community. [Shoot me an email](mailto:linton@jimulabs.com), I'm all ears!
+
+## What should I know before taking this course?
+You should have some base knowledge of programming, be familiar with HTML and CSS, and can read and edit JavaScript code. If you don't, no worries! There are many great resources for you to pick them up, for example, Khan Academy's [Intro to JS: Drawing & Animation](https://www.khanacademy.org/computing/computer-programming/programming) and Codecademy's [interactive courses](https://www.codecademy.com/learn/javascript).
+
+## Who will teach the course?
+Me for now. I'm a developer and I'm learning design as well. I've been working on mobile since 2007 and React Native since 2015. I've authored a [course](https://teamtreehouse.com/library/animations-and-transitions) about Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
+
 ## Is this about ReactJS or React Native?
-There might be some confusion about the differences between the two. The good news is that they are both called "React" for a reason. Once you learn the fundamental concepts, it will be straightforward to use it for the web (ReactJS), mobile (React Native), Sketch (React Sketch.app), or ReactXYZ. BTW: it seems Facebook has [never officially used](https://web.archive.org/web/20130529213355/https://facebook.github.io/react/) the name "ReactJS" or "React.js" for the web part. It's just "React".
+There might be some confusion about the differences between the two. The good news is that they are both called "React" for a reason. Once you learn the fundamental concepts, it will be straightforward to use it for the web (ReactJS), mobile (React Native), Sketch (React Sketch.app), or ReactXYZ.
 
 At least at the beginning, I will focus on teaching React fundamentals with minimal setup requirements. Afterwards, I'll consider to branch into web, mobile or other platforms depending on the demand.
 
 What do you think? [Email me](mailto:linton@jimulabs.com) if you have any suggestions!
-
-## So where can I download / sign up for the course?
-It's still at a very early stage. I plan to gradually develop the course content over a few months. So you are practically witnessing the birth of a brand new course! It's a good opportunity to have your influence on creating a great resource for the entire design community. [Shoot me an email](mailto:linton@jimulabs.com), I'm all ears!
-
-Also, leave your email address above and I'll keep you posted when I have something worth sharing.
-
-## What should I know before taking this course?
-I assume most designers know about HTML and CSS, with some exposure of JavaScript. Hopefully we can use that as a starting point.
-
-But again, I'm still exploring. Perhaps that'd be enough, perhaps not. Perhaps I'd consider to add a module teaching JavaScript basics. I don't know yet. It'll depend on what you want and my availability. So let me know what you think!
-
-## Who will teach the course?
-Me for now. I'm a developer and I'm learning design as well. I've been working on mobile since 2007 and React Native since 2015. I've authored a [course](https://teamtreehouse.com/library/animations-and-transitions) about Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
 
 Thanks a lot for your interest!
 
