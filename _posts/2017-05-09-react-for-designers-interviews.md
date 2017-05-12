@@ -170,12 +170,12 @@ My special thanks to these fantastic folks (sorted by last name):
 - Sure Lee
 - Rutuja Rasam
 - [Ben Pepin](http://www.benpepin.com/)
+- [Arjun Phlox](https://twitter.com/arjunphlox)
 - [Toby Silverman](http://design.tobysilverman.com/)
 - Brittany Smart
 - [Jeffery Vaska](http://vaska.com/)
 - [Jerry Wang](https://medium.com/@jerrywang)
 - [Beebee Ye](https://beebeeye.github.io/)
-- Arjun
 
 ---
 
