@@ -97,7 +97,7 @@ My special thanks to these fantastic folks who have given me invaluable help, in
 - [Jeffery Vaska](http://vaska.com/)
 - [Jerry Wang](https://medium.com/@jerrywang)
 - [Beebee Ye](https://beebeeye.github.io/)
-- [Justin Ziccardi](https://cycleshq.com)
+- [Justin Ziccardi](https://twitter.com/cycleshq)
 
 
 <script async id="_ck_209062" src="https://forms.convertkit.com/209062?v=6"></script>
