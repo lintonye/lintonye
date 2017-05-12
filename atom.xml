@@ -4,7 +4,7 @@
  <title>Linton's React Native Diary</title>
  <link href="http://lintonye.github.io/atom.xml" rel="self"/>
  <link href="http://lintonye.github.io"/>
- <updated>2017-05-12T07:11:27-07:00</updated>
+ <updated>2017-05-12T11:15:10-07:00</updated>
  <id>http://lintonye.github.io/atom.xml</id>
  <author>
    <name>Linton Ye</name>
@@ -225,7 +225,7 @@
 &lt;p&gt;My special thanks to these fantastic folks (sorted by last name):&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;J. Terrell Allen&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://dribbble.com/JTerrellAllen&quot;&gt;J. Terrell Allen&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://dribbble.com/casualmess&quot;&gt;Jovana Andjelkovic&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://olafurbreidfjord.com/&quot;&gt;Olafur Breidfjord&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://medium.com/@arle13&quot;&gt;Jinju Jang&lt;/a&gt;&lt;/li&gt;
