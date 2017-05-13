@@ -63,13 +63,15 @@ New skills you learn will open new doors. Trust me, it will be a new world of cr
 It's still at a very early stage. I plan to gradually develop the course content over a few months. So you are practically witnessing the birth of a brand new course! It's a good opportunity to have your influence on creating a great resource for the entire design community. [Shoot me an email](mailto:linton@jimulabs.com), I'm all ears!
 
 ## What should I know before taking this course?
-You should have some base knowledge of programming, be familiar with HTML and CSS, and can read and edit JavaScript code. If you don't, no worries! There are many great resources for you to pick them up, for example, Khan Academy's [Intro to JS: Drawing & Animation](https://www.khanacademy.org/computing/computer-programming/programming) and Codecademy's [interactive courses](https://www.codecademy.com/learn/javascript).
+You should have some base knowledge of programming, be familiar with HTML and CSS, and can read and edit JavaScript code. If you don't, no worries! There are many great resources for you to pick them up, for example, Treehouse's [JavaScript courses](https://teamtreehouse.com/learn/javascript), or Khan Academy's [Intro to JS: Drawing & Animation](https://www.khanacademy.org/computing/computer-programming/programming).
+
+If you strongly feel that the course should include base programming topics such as JavaScript basics, tell me!
 
 ## Who will teach the course?
-Me for now. I'm a full-stack developer and I'm learning design as well. I've been working on mobile since 2007, React since 2014 and React Native since 2015. I've authored a [course](https://teamtreehouse.com/library/animations-and-transitions) about Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
+Me for now. I'm a full-stack developer who's learning design. I've been working on mobile since 2007, React since 2014 and React Native since 2015. I've authored a [course](https://teamtreehouse.com/library/animations-and-transitions) about Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
 
 ## Is this about ReactJS or React Native?
-There might be some confusion about the differences between the two. The good news is that they are both called "React" for a reason. Once you learn the fundamental concepts, it will be straightforward to use it for the web (ReactJS), mobile (React Native), Sketch (React Sketch.app), or ReactXYZ.
+There might be some confusion about the difference between the two. The good news is that they are both called "React" for a reason. Once you learn the fundamental concepts, it will be straightforward to use it for the web (ReactJS), mobile (React Native), Sketch (React Sketch.app), or ReactXYZ.
 
 At least at the beginning, I will focus on teaching React fundamentals with minimal setup requirements. Afterwards, I'll consider to branch into web, mobile or other platforms depending on the demand.
 
