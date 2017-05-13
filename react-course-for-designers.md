@@ -23,6 +23,7 @@ author:
 - **Hand off assets that your developers love**
 - **Empower your design with code -- be able to push back when you're told it can't be done**
 - **Bring your design to life with your own hands!**
+- **Design with code, turbocharge your creativity!**
 
 [//]: - Stop waiting for developers to implement your work
 [//]: - Be able to push back when you’re told it can’t be done
@@ -65,7 +66,7 @@ It's still at a very early stage. I plan to gradually develop the course content
 You should have some base knowledge of programming, be familiar with HTML and CSS, and can read and edit JavaScript code. If you don't, no worries! There are many great resources for you to pick them up, for example, Khan Academy's [Intro to JS: Drawing & Animation](https://www.khanacademy.org/computing/computer-programming/programming) and Codecademy's [interactive courses](https://www.codecademy.com/learn/javascript).
 
 ## Who will teach the course?
-Me for now. I'm a developer and I'm learning design as well. I've been working on mobile since 2007 and React Native since 2015. I've authored a [course](https://teamtreehouse.com/library/animations-and-transitions) about Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
+Me for now. I'm a full-stack developer and I'm learning design as well. I've been working on mobile since 2007, React since 2014 and React Native since 2015. I've authored a [course](https://teamtreehouse.com/library/animations-and-transitions) about Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
 
 ## Is this about ReactJS or React Native?
 There might be some confusion about the differences between the two. The good news is that they are both called "React" for a reason. Once you learn the fundamental concepts, it will be straightforward to use it for the web (ReactJS), mobile (React Native), Sketch (React Sketch.app), or ReactXYZ.
