@@ -19,11 +19,11 @@ author:
 <img src ="/images/designer-interviews/superman.jpg" style="width: 100%"/>
 
 - **Understand the constraints of React, design accordingly**
-- **Tweak the styles yourself instead of waiting for developers' spare cycle**
+- **Tweak the styles yourself, stop waiting for developers' spare cycle**
 - **Hand off assets that your developers love**
-- **Empower your design with code -- be able to push back when you're told it can't be done**
-- **Bring your design to life with your own hands!**
-- **Design with code, turbocharge your creativity!**
+- **Empower your design with code, push back when they say it can't be done**
+- **Design with code, turbocharge your creativity**
+- **Bring your design to life with your own hands**
 
 [//]: - Stop waiting for developers to implement your work
 [//]: - Be able to push back when you’re told it can’t be done
