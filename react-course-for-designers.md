@@ -29,6 +29,11 @@ author:
 [//]: - Be able to push back when you’re told it can’t be done
 [//]: - Talk in their jargon with developers
 
+---
+<div style="text-align: center;">
+  <h2>Shoot me a reminder when it's ready:</h2>
+</div>
+
 <script async id="_ck_209062" src="https://forms.convertkit.com/209062?v=6"></script>
 
 ---
@@ -98,5 +103,8 @@ My special thanks to these fantastic folks who have given me invaluable help, in
 - [Beebee Ye](https://beebeeye.github.io/)
 - [Justin Ziccardi](https://twitter.com/cycleshq)
 
-
+---
+<div style="text-align: center;">
+  <h2>Shoot me a reminder when it's ready:</h2>
+</div>
 <script async id="_ck_209062" src="https://forms.convertkit.com/209062?v=6"></script>
