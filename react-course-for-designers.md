@@ -73,7 +73,7 @@ You should have some base knowledge of programming, be familiar with HTML and CS
 If you strongly feel that the course should include base programming topics such as JavaScript basics, tell me!
 
 ## Who will teach the course?
-Me for now. I'm a full-stack developer who's learning design. I've been working on mobile since 2007, React since 2014 and React Native since 2015. I've authored a [course](https://teamtreehouse.com/library/animations-and-transitions) about Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
+Me for now. I'm a full-stack developer who's learning design. I've been working on mobile since 2007 and React Native since 2015. I've authored a [course](https://teamtreehouse.com/library/animations-and-transitions) about Android animation at Treehouse, and a course on Material Design with React Native on Lynda (in production). I also contribute to [React Navigation](https://github.com/react-community/react-navigation) project.
 
 ## Is this about ReactJS or React Native?
 There might be some confusion about the difference between the two. The good news is that they are both called "React" for a reason. Once you learn the fundamental concepts, it will be straightforward to use it for the web (ReactJS), mobile (React Native), Sketch (React Sketch.app), or ReactXYZ.
