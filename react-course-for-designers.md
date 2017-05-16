@@ -19,7 +19,7 @@ author:
 <img src ="/images/designer-interviews/superman.jpg" style="width: 100%"/>
 
 - **Understand the constraints of React, design accordingly**
-- **Tweak the styles yourself, stop waiting for developers' spare cycle**
+- **Stop waiting for developers, tweak the styles yourself**
 - **Hand off assets that your developers love**
 - **Empower your design with code, push back when they say it can't be done**
 - **Design with code, turbocharge your creativity**
@@ -31,7 +31,7 @@ author:
 
 ---
 <div style="text-align: center;">
-  <h2>Shoot me a reminder when it's ready:</h2>
+  <h2>Shoot me a reminder when the course is ready:</h2>
 </div>
 
 <script async id="_ck_209062" src="https://forms.convertkit.com/209062?v=6"></script>
@@ -85,26 +85,11 @@ What do you think? [Email me](mailto:linton@jimulabs.com) if you have any sugges
 Thanks a lot for your interest!
 
 ## Acknowledgements
-My special thanks to these fantastic folks who have given me invaluable help, inspiration and encouragement (sorted by last name):
-
-- [J. Terrell Allen](https://dribbble.com/JTerrellAllen)
-- [Jovana Andjelkovic](https://dribbble.com/casualmess)
-- [Olafur Breidfjord](http://olafurbreidfjord.com/)
-- [Jinju Jang](http://medium.com/@arle13)
-- Antti Kareinen
-- Sure Lee
-- Rutuja Rasam
-- [Ben Pepin](http://www.benpepin.com/)
-- [Arjun Phlox](https://twitter.com/arjunphlox)
-- [Toby Silverman](http://design.tobysilverman.com/)
-- Brittany Smart
-- [Jeffery Vaska](http://vaska.com/)
-- [Jerry Wang](https://medium.com/@jerrywang)
-- [Beebee Ye](https://beebeeye.github.io/)
-- [Justin Ziccardi](https://twitter.com/cycleshq)
+My special thanks to these fantastic folks who have given me invaluable help, inspiration and encouragement (sorted by last name): [J. Terrell Allen](https://dribbble.com/JTerrellAllen), [Jovana Andjelkovic](https://dribbble.com/casualmess), [Olafur Breidfjord](http://olafurbreidfjord.com/), [Jinju Jang](http://medium.com/@arle13), Antti Kareinen, Sure Lee
+, Rutuja Rasam, [Ben Pepin](http://www.benpepin.com/), [Arjun Phlox](https://twitter.com/arjunphlox), [Toby Silverman](http://design.tobysilverman.com/), Brittany Smart, [Jeffery Vaska](http://vaska.com/), [Jerry Wang](https://medium.com/@jerrywang), [Beebee Ye](https://beebeeye.github.io/), [Justin Ziccardi](https://twitter.com/cycleshq)
 
 ---
 <div style="text-align: center;">
-  <h2>Shoot me a reminder when it's ready:</h2>
+  <h2>Shoot me a reminder when the course is ready:</h2>
 </div>
 <script async id="_ck_209062" src="https://forms.convertkit.com/209062?v=6"></script>
