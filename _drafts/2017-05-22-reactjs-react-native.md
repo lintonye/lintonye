@@ -15,9 +15,9 @@ author:
   image: linton.jpg
 ---
 
-React receives a lot of interest not only among developers, but also designers. [Many designers](TODO DN post) are considering to include React into their toolbox. People talk about React, ReactJS, React.js, React Native, Airbnb's [React Sketch.app](TODO) etc. But to my surprise, a lot of people do not really understand the precise difference between those terms (to be honest, myself included, before writing this post).
+React receives a lot of interest not only among developers, but also designers. [Many designers are considering](TODO DN post) to include React into their toolbox. People talk about React, ReactJS, React.js, React Native, [React Sketch.app](TODO) etc. But to my surprise, a lot of them are not aware of the precise difference between those terms.
 
-This post is an attempt to explain the terms in React family in plain English. After reading, hopefully you'll understand a bit more about what React is and the relationship and difference between ReactXYZ.
+This post is an attempt to explain the terms in React family in plain English. After reading this, hopefully you'll understand a bit more about what React is and the relationship and difference between ReactXYZ.
 
 
 - React as a paradigm, a way of thinking
