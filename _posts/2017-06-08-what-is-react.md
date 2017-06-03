@@ -15,10 +15,11 @@ author:
   image: linton.jpg
 ---
 
-_This series of posts will be the very first part of the ["React for Designers" course](TODO) I'm creating. Be sure to [sign up](TODO) to receive exclusive updates!_
+_This series of posts will be the very first part of the ["React for Designers" course](/react-course-for-designers.html) I'm creating. Be sure to [sign up](/react-course-for-designers.html) to receive exclusive updates!_
 
 - _What is React? (this post)_
 - _React, ReactJS, React.js, React Native, Which is Which? (coming soon)_
+- _Components, props, state etc. (coming a bit less soon)_
 
 ---
 
@@ -26,9 +27,11 @@ React, ReactJS, React.js, React Native... How many times have you heard about th
 
 If you are a designer in a team that uses (or considers to use) React, or if you are simply curious about this React thing, this series of posts is for you.
 
-In plain English and doodles🌴🎄, I'll explain the terms in React family and dive into what makes React special. No coding knowledge is required to read this post. But what you'd learn will become a solid foundation when we actually get our hands dirty with code in future posts.
+In plain English and doodles🌴🎄, I'll explain the terms in React family and dive into what makes React special. No coding knowledge is required to read this post. But when we actually get our hands dirty with code, what you'd learn here will become a solid foundation.
 
 Are you ready?
+
+<a name="learning-goals" >
 
 # Learning Goals
 After reading this post, I hope you can easily answer these questions:
@@ -41,7 +44,7 @@ After reading this post, I hope you can easily answer these questions:
 - What is a reactive UI?
 - What are some benefits of components?
 
-# Background Stories
+# Prologue
 Let's begin with a couple of other terms that you might have heard of for years. The first one, DOM.
 
 ## DOM
@@ -53,14 +56,14 @@ Forget about it. Let's check out the prestigious art studio "Web Browser"!
 
 So, DOM is a ... tree? Yup a tree. Oddly enough, a lot of things in your computer look like a tree[^1].
 
-DOM is a tree who works as a model at the studio "Web Browser" -- Let's give him a nickname Domo. Domo's job is to pose in front of Browsera the artist who paints a portrait (or perhaps millions of portraits).
+DOM works as a model at the studio "Web Browser" -- Let's give him a nickname Domo. Domo's job is to pose in front of Browsera the artist who paints a portrait (or perhaps millions of portraits).
 
 The portraits are what we see in the web browser when visiting a website. A developer's job is to tell Domo what to wear and what pose to make, which determine what those portraits look like in the end. Libraries like jQuery or React are the tools a developer uses to communicate with Domo.
 
 ## jQuery
 jQuery is a JavaScript library that makes it easier for a developer to manipulate the DOM. How does it fit in the story of Domo and Browsera?
 
-It is a tool that makes it easier for you to talk to Domo, just like a phone. You can call him wherever you are, whenever you want. It's a lot more convenient than before (raw JavaScript) -- you used to have to be in the same room in order to have a conversation.
+It is a tool that makes it easier for you to talk to Domo, just like a phone. You can call him wherever you are, whenever you want. It's a lot more convenient than before (raw JavaScript) -- remember the time when people had to be physically close enough to have a conversation before the invention of telephones?
 
 ![Use phone with a label "jQuery" to talk to Domo, or perhaps just a phone with label](/images/what-is-react/04-jquery-phone.png)
 
@@ -96,13 +99,25 @@ This way, when somebody asks for portraits where Domo wear a different hat, you 
 
 ![Sketch with ornaments placeholders, Domo with different ornaments](/images/what-is-react/09-thinker-with-hat.png)
 
-This trick is how React got its name. The UI built with React is **reactive**. As a developer, you just need to write down **what** you want and React figures out **how** to do it. When the data change, your UI changes accordingly. You don't need to worry about updating the UI, React does it automatically. The idea of reactive UI greatly simplifies UI development.TODO
+This trick is how React got its name. The UI built with React is **reactive**. As a developer, you just need to write down **what** you want and React figures out **how** to do it. When the data change, your UI changes accordingly. You don't need to worry about updating the DOM, React does it for you automatically. The idea of reactive UI greatly simplifies UI development.
 
-[code pen example](TODO)
+To put things in perspective, try this example:
+
+<p data-height="375" data-theme-id="light" data-slug-hash="gROrXx" data-default-tab="result" data-user="focuser" data-embed-version="2" data-pen-title="Reactive UI" class="codepen">See the Pen <a href="https://codepen.io/focuser/pen/gROrXx/">Reactive UI</a> by focuser (<a href="https://codepen.io/focuser">@focuser</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+I'll explain its full code in a future post, but at this point you can just look this core piece:
 
 {% highlight jsx%}
-$('')
+const ThinkerWithHat = ({hat}) => (
+  <div>
+    <Hat type={hat}/>
+    <Thinker />
+  </div>
+);
 {% endhighlight %}
+
+Notice that you just need to define what you want (a thinker with a hat), and "wire up" the data ("`type = {hat}`"). When the data change (user selects a hat), the UI updates automatically.
 
 ## Virtual DOM
 Another issue of jQuery is about the speed. As customers of the studio, we are very demanding. We want the portraits to come out as quickly as possible. We don't like to wait.
@@ -113,11 +128,11 @@ Worse, we'd have to wait for Browsera to finish painting a portrait before being
 
 ![Domo and Browsera tell customer to wait, customer has a lot more requests, customer is frustrated](/images/what-is-react/10-slow-dom.png)
 
-React pulls another trick to fix that. She's very fast at drawing quick sketches. Almost immediately after you tell her your requirement, she's done with a sketch and ready to take the next one. Now no more wait! You can keep telling React about the portraits you want, nonstop. React keeps record of everything with sketches and show it to Domo at the right time.
+React pulls another trick to fix that. She's very fast at drawing quick sketches. Almost immediately after you tell her your requirement, she's done with a sketch and ready to take the next order. Now no more wait! You can keep telling React about the portraits you want, nonstop. React keeps record of everything with sketches and show it to Domo at the right time.
 
 ![React looks at a pile of sketches, quickly builds sketches and arrange them in a queue; Domo poses according to a sketch](/images/what-is-react/11-sketches.png)
 
-More importantly, React is smart. He can sort through the sketches and remove any duplication to streamline the process.TODO
+More importantly, React is smart. He can sort through the sketches, remove any duplication and make sure that Domo and Browsera do as little work as possible.
 
 ![React holds two sketch trees in each hand, similar poses, and tells Domo to only lift up his leg (or whatever minor adjustment)](/images/what-is-react/12-optimize-sketches.png)
 
@@ -128,7 +143,7 @@ The third trick of React is the concept of components.
 
 Components should be straightforward to understand because it's the way how our real world works. Our cars, houses and even our bodies are all made up of identifiable components that are individual, functional units. These components are made up of smaller components which consist of even smaller components, all the way down to atoms.
 
-Back to our studio "Web Browser", you describe your requirement for portraits as components, React translates it into what Domo understands. This saves you a lot time because you don't have to repeat common parts in your requirement.
+Back to our studio "Web Browser", you describe your requirement for portraits as components, React translates it into what Domo understands. This saves you a lot time because you don't have to repeat common parts in your order.
 
 ![sketch made up of components](/images/what-is-react/13-components.png)
 
@@ -139,14 +154,18 @@ Another cool thing about components is that, if you change a component, everythi
 # Conclusion
 TODO
 
+I encourage you to go back to the [Learning Goals](#learning-goals) to see if you can answer all the questions. Let me know if you have any questions or comments!
+
+---
+
+**Want to learn more about React? Be sure to sign up the [React course for Designers](/react-course-for-designers.html) to receive exclusive updates!**
+
 ---
 
 # Footnotes:
 
-[^1]: Fair enough, in reality, computers are not giant containers stuffed with tree branches. But in order to study how to organize information, people draw charts which look like upside down trees (like [this](TODO) and [this](TODO)).
+[^1]: Fair enough, in reality, computers are not compost containers stuffed with tree branches. The tree notion comes from how people organize information in a way that's easy for computers to process. People typically draw charts which remotely resemble upside-down trees, like [this](https://www.w3schools.com/js/pic_htmltree.gif) or [this](https://www.w3.org/TR/DOM-Level-2-Core/images/table.gif).
 
-[^2]: TODO: Declarative vs imperative, you define **what** you want instead of **how** you want it to be done.
-
-
+[^2]: In fancy tech slang, if the code defines **what** you want, it's called _declarative_; if it defines **how** you want it to be done, it's called _imperative_. Imperative programming emerged from the day when computers were first invented. When the computers were primitive, people had to instruct them in detail: where to store the numbers, how to multiply etc. It was fine at the beginning, but coding this way becomes increasingly unmanageable as the tasks given to computers become more and more complex. People then wrote smart software that convert definition of problems into detailed instructions. Declarative programming was born. Today, more and more programming languages and frameworks, such as React, allow us to code declaratively instead of imperatively.
 
 <a name="endofpost">
